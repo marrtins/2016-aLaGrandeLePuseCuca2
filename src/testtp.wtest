@@ -1,0 +1,13 @@
+import tpobj.*
+test "PINTURA: Latas necesarias para 251m2 deben ser 6" {
+
+	assert.equals(6,balde.precioPintura(251))
+
+}
+
+test "PINTURA: Latas necesarias para 250m2deben ser 5"{
+	assert.equals(5,balde.precioPintura(250))
+}
+test "PINTURA: Latas necesarias para 249m2deben ser 5"{
+	assert.equals(5,balde.precioPintura(249))
+}
