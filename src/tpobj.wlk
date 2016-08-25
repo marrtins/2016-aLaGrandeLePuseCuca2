@@ -1,5 +1,8 @@
 object aldo {
 	var ahorros = 6000
+	method ahorrarMas(masAhorro){
+		ahorros += masAhorro
+	}
 	method superficieAPintar(){
 		return  cocina.superficie() +habitacion.superficie()
 		
@@ -8,43 +11,54 @@ object aldo {
 		return ahorros *0.2
 	}
 	method puedeContratarA(persona){
-		return self.presupuesto() > persona.pintarTotal(self.superficieAPintar())
+		return self.presupuesto() > persona.pintarTotal()
 	}
 	
 }
 
 object pintura {
 	
-	method precioTotalPintura(tipo,metrosCuadrados){
-		return tipo.precioPintura(metrosCuadrados)
+	method precioTotalPintura(tipo){
+		return tipo.precioPintura()
 	}
-	
-	
 }
-
-object balde {
-	var latasPorMetros = 1
-	var precioCada50 = 200
-	method precioPintura(metrosCuadrados){
-		latasPorMetros = metrosCuadrados /50
-		return precioCada50 * rounder.roundUp(latasPorMetros)
+object metrosCuadrados {
+	var metros = 0
+	method metrosCTest(m){
+		metros = m
 	}
+	method metrosC(){
+		return metros
+	}
+}
+object balde {
+	var precioCada50 = 200
+	method nuevoPrecio(nuevoPrecio){
+		precioCada50 = nuevoPrecio
+	}
+	method latasNecesarias(){
+		return rounder.roundUp(metrosCuadrados.metrosC() * 0.02)
+	}
+	method precioPintura(){
+		return  self.latasNecesarias() * precioCada50 
+	}
+	
 }
 object granel {
 	var costoPorLitro = 3.50
-	method precioPintura(metrosCuadrados){
-		return costoPorLitro * metrosCuadrados
+	method precioPintura(){
+		return costoPorLitro * metrosCuadrados.metrosC()
 	}
 }
 
 object raul {
 	var cobrar = 0
 	var tipo = balde
-	method manoDeObra(metrosCuadrados){
-		return 25*metrosCuadrados
+	method manoDeObra(){
+		return 25*metrosCuadrados.metrosC()
 	}
-	method pintarTotal(metrosCuadrados) {
-		cobrar=  self.manoDeObra(metrosCuadrados) + pintura.precioTotalPintura(tipo,metrosCuadrados) 
+	method pintarTotal() {
+		cobrar=  self.manoDeObra() + pintura.precioTotalPintura(tipo) 
 		return cobrar 
 	}
 	
@@ -54,9 +68,9 @@ object raul {
 
 object carlos {
 	var cobrar = 0
-	method pintarTotal(metros){
-		if(metros <= 20){cobrar = 500}
-		else{cobrar = 500 + (metros - 20)*30}
+	method pintarTotal(){
+		if(metrosCuadrados.metrosC() <= 20){cobrar = 500}
+		else{cobrar = 500 + (metrosCuadrados.metrosC() - 20)*30}
 	return cobrar
 	}
 	
@@ -66,25 +80,37 @@ object carlos {
 object venancio {
 	var cobrar = 0
 	var tipo = balde
-	method manoDeObra(metrosCuadrados){
-		return 200 * rounder.roundUp(metrosCuadrados)
+	method cambioDeTipo(_tipo){
+		tipo=_tipo
 	}
-	method pintarTotal(metrosCuadrados){
-		cobrar =  self.manoDeObra(metrosCuadrados)+ pintura.precioTotalPintura(tipo,metrosCuadrados)
+	method manoDeObra(){
+		return 220 * (rounder.roundUp(metrosCuadrados.metrosC() * 0.1))
+	}
+	method pintarTotal(){
+		cobrar =  self.manoDeObra()+ pintura.precioTotalPintura(tipo)
 	return cobrar
 	}	
 }
 
 object cocina{
-	var largo = 2
-	var ancho = 1
-	var alto = 3.5
+	var largo = 0
+	var ancho = 0
+	var alto = 0
+	method largoAnchoAltoTest(l,a,a2){
+		largo = l
+		ancho = a
+		alto = a2
+	}
+	
 	method superficie(){
 		return (ancho + largo)* 2* alto
 	}
 }
 object habitacion {
-	var metrosTotales = 20
+	var metrosTotales = 0
+	method metrosTotalesTest(m){
+		metrosTotales = m
+	}
 	method superficie(){
 		return metrosTotales
 	}
