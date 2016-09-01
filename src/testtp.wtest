@@ -1,79 +1,65 @@
 import tpobj.*
 test "PINTURA: Latas necesarias para 251m2 deben ser 6" {
-	metrosCuadrados.metrosCTest(251) // volar
-	assert.equals(6,balde.latasNecesarias())
+	assert.equals(6,balde.latasNecesarias(251))
 }
 
 test "PINTURA: Latas necesarias para 250m2deben ser 5"{
-	metrosCuadrados.metrosCTest(250)
-	assert.equals(5,balde.latasNecesarias())
+	assert.equals(5,balde.latasNecesarias(250))
 }
 test "PINTURA: Latas necesarias para 249m2deben ser 5"{
-	metrosCuadrados.metrosCTest(249)
-	assert.equals(5,balde.latasNecesarias())
+	assert.equals(5,balde.latasNecesarias(249))
 }
 
 test "PINTURA: Costo de pintura de una superfi de 10m2 debe ser 200" {
-	metrosCuadrados.metrosCTest(10) // volar
-	assert.equals(200,balde.precioPintura())
+	assert.equals(200,balde.precioPintura(10))
 }
 
 test "PINTURA: Costo de pintura de una superfi de 250m2 debe ser 1000" {
-	metrosCuadrados.metrosCTest(250)
-	assert.equals(1000,balde.precioPintura())
+	assert.equals(1000,balde.precioPintura(250))
 }
 
 
 test "PINTORES: mano de obra de raul por 20m2 debe ser 500"{
-	metrosCuadrados.metrosCTest(20) //volar
-	assert.equals(500,raul.manoDeObra())
+	assert.equals(500,raul.costoManoDeObra(20))
 }
 test "PINTORES: total de raul por 20m2 debe ser 700"{
-	metrosCuadrados.metrosCTest(20)
-	assert.equals(700,raul.pintarTotal())
+	
+	assert.equals(700,raul.costoTotal(20))
 }
 
 test "PINTORES: total de carlos por 20m2 debe ser 500"{
-	metrosCuadrados.metrosCTest(20)
-	assert.equals(500,carlos.pintarTotal())
+	
+	assert.equals(500,carlos.costoTotal(20))
 }
 test "PINTORES: total de carlos por 32m2 debe ser 860"{
-	metrosCuadrados.metrosCTest(32)
-	assert.equals(860,carlos.pintarTotal())
+	
+	assert.equals(860,carlos.costoTotal(32))
 }
 test "PINTORES: mano de obra de venancio por 32m2 debe ser 880"{
-	metrosCuadrados.metrosCTest(32)
-	assert.equals(880,venancio.manoDeObra())
+	
+	assert.equals(880,venancio.costoManoDeObra(32))
 }
 test "PINTORES: mano de obra de venancio por 20m2 debe ser 440"{
-	metrosCuadrados.metrosCTest(20)
-	assert.equals(440,venancio.manoDeObra())
+	assert.equals(440,venancio.costoManoDeObra(20))
 }
 
 test "PINTORES: total de venancio por 32m2 debe ser 1080"{
-	metrosCuadrados.metrosCTest(32)
-	assert.equals(1080,venancio.pintarTotal())
+	assert.equals(1080,venancio.costoTotal(32))
 }
 test "AMBIENTES: Superficie de la cocina debe ser 21m"{
-	cocina.largoAnchoAltoTest(1,2,3.5)
 	assert.equals(21,cocina.superficie())
 }
 test "AMBIENTES: Superficie de la habitacion debe ser 20m"{
-	habitacion.metrosTotalesTest(20)
 	assert.equals(20,habitacion.superficie())
 }
 
 test "ALDO: Superficie total a pintar para aldo debe ser 41"{
-	habitacion.metrosTotalesTest(20) // no necesario
-	cocina.largoAnchoAltoTest(1,2,3.5)
 	assert.equals(41,aldo.superficieAPintar())
 }
 test "ALDO: Presupuesto maximo debe ser 1200"{
 	assert.equals(1200,aldo.presupuesto())
 }
 test "ALDO: Puede contratar a raul debe ser no"{
-	metrosCuadrados.metrosCTest(41) // FEEEEOOOO Están calculando en los tests
-	 							// cosas que debería calcular el sistema
 	assert.notThat(aldo.puedeContratarA(raul))
 }
 test"ALDO: Si ahorra 2000 mas puede contratar a raul debe ser si"{
@@ -101,12 +87,12 @@ test "ALDO: Si ahorra 2000 mas puede contratar a venancio debe ser true"{
 	assert.that(aldo.puedeContratarA(venancio))
 }
 test "PINTURA A GRANEL: el costo de una pintura de una superficie de 10m2 debe ser 35"{
-	metrosCuadrados.metrosCTest(10)
-	assert.equals(35,pintura.precioTotalPintura(granel)) // responsabilidades!!! El costo debería saberlo la pintura granel
+	
+	assert.equals(35,granel.precioPintura(10))  
 }
 test "PINTURA A GRANEL: el costo de una pintura de una superficie de 250m2 debe ser 875"{
-	metrosCuadrados.metrosCTest(250)
-	assert.equals(875,pintura.precioTotalPintura(granel))
+	
+	assert.equals(875,granel.precioPintura(250))
 }
 test"PINTURA A GRANEL: venancio trabaja con pintura a granel; alddo puede contratar a venancio debe ser false"{
 	metrosCuadrados.metrosCTest(41)
