@@ -1,6 +1,6 @@
 import tpobj.*
 test "PINTURA: Latas necesarias para 251m2 deben ser 6" {
-	metrosCuadrados.metrosCTest(251)
+	metrosCuadrados.metrosCTest(251) // volar
 	assert.equals(6,balde.latasNecesarias())
 }
 
@@ -14,7 +14,7 @@ test "PINTURA: Latas necesarias para 249m2deben ser 5"{
 }
 
 test "PINTURA: Costo de pintura de una superfi de 10m2 debe ser 200" {
-	metrosCuadrados.metrosCTest(10)
+	metrosCuadrados.metrosCTest(10) // volar
 	assert.equals(200,balde.precioPintura())
 }
 
@@ -25,7 +25,7 @@ test "PINTURA: Costo de pintura de una superfi de 250m2 debe ser 1000" {
 
 
 test "PINTORES: mano de obra de raul por 20m2 debe ser 500"{
-	metrosCuadrados.metrosCTest(20)
+	metrosCuadrados.metrosCTest(20) //volar
 	assert.equals(500,raul.manoDeObra())
 }
 test "PINTORES: total de raul por 20m2 debe ser 700"{
@@ -64,7 +64,7 @@ test "AMBIENTES: Superficie de la habitacion debe ser 20m"{
 }
 
 test "ALDO: Superficie total a pintar para aldo debe ser 41"{
-	habitacion.metrosTotalesTest(20)
+	habitacion.metrosTotalesTest(20) // no necesario
 	cocina.largoAnchoAltoTest(1,2,3.5)
 	assert.equals(41,aldo.superficieAPintar())
 }
@@ -72,7 +72,8 @@ test "ALDO: Presupuesto maximo debe ser 1200"{
 	assert.equals(1200,aldo.presupuesto())
 }
 test "ALDO: Puede contratar a raul debe ser no"{
-	metrosCuadrados.metrosCTest(41)
+	metrosCuadrados.metrosCTest(41) // FEEEEOOOO Están calculando en los tests
+	 							// cosas que debería calcular el sistema
 	assert.notThat(aldo.puedeContratarA(raul))
 }
 test"ALDO: Si ahorra 2000 mas puede contratar a raul debe ser si"{
@@ -81,7 +82,7 @@ test"ALDO: Si ahorra 2000 mas puede contratar a raul debe ser si"{
 }
 
 test "ALDO: Si ahorra 1000 mas, la pintura ahora cuesta 400 aldo puede contratar a raul debe ser falso"{
-	metrosCuadrados.metrosCTest(41)
+	metrosCuadrados.metrosCTest(41) // mismo problema q arriba
 	aldo.ahorrarMas(1000)
 	balde.nuevoPrecio(400)
 	assert.notThat(aldo.puedeContratarA(raul))
@@ -101,7 +102,7 @@ test "ALDO: Si ahorra 2000 mas puede contratar a venancio debe ser true"{
 }
 test "PINTURA A GRANEL: el costo de una pintura de una superficie de 10m2 debe ser 35"{
 	metrosCuadrados.metrosCTest(10)
-	assert.equals(35,pintura.precioTotalPintura(granel))
+	assert.equals(35,pintura.precioTotalPintura(granel)) // responsabilidades!!! El costo debería saberlo la pintura granel
 }
 test "PINTURA A GRANEL: el costo de una pintura de una superficie de 250m2 debe ser 875"{
 	metrosCuadrados.metrosCTest(250)

@@ -11,26 +11,18 @@ object aldo {
 		return ahorros *0.2
 	}
 	method puedeContratarA(persona){
-		return self.presupuesto() > persona.pintarTotal()
+		return self.presupuesto() > persona.pintarTotal() //persona.costoTotal(self.superficieAPintar())
 	}
 	
 }
 
-object pintura {
+object pintura { // pasamanos, innecesario.
 	
 	method precioTotalPintura(tipo){
 		return tipo.precioPintura()
 	}
 }
-object metrosCuadrados {
-	var metros = 0
-	method metrosCTest(m){
-		metros = m
-	}
-	method metrosC(){
-		return metros
-	}
-}
+
 object balde {
 	var precioCada50 = 200
 	method nuevoPrecio(nuevoPrecio){
@@ -39,6 +31,9 @@ object balde {
 	method latasNecesarias(){
 		return rounder.roundUp(metrosCuadrados.metrosC() * 0.02)
 	}
+	//method latasNecesarias(metros){
+	//	return rounder.roundUp(metros * 0.02)
+	//}
 	method precioPintura(){
 		return  self.latasNecesarias() * precioCada50 
 	}
@@ -54,11 +49,15 @@ object granel {
 object raul {
 	var cobrar = 0
 	var tipo = balde
+	//method costoManoDeObra(metros){
+	//	return 25 * metros
+	//}
 	method manoDeObra(){
-		return 25*metrosCuadrados.metrosC()
+		return metrosCuadrados.metrosC() * 25
 	}
-	method pintarTotal() {
-		cobrar=  self.manoDeObra() + pintura.precioTotalPintura(tipo) 
+	
+	method pintarTotal() { //cambiar
+		cobrar=  self.manoDeObra() + /*granel? balde? no. tipo*/pintura.precioTotalPintura(tipo) 
 		return cobrar 
 	}
 	
@@ -72,6 +71,11 @@ object carlos {
 		if(metrosCuadrados.metrosC() <= 20){cobrar = 500}
 		else{cobrar = 500 + (metrosCuadrados.metrosC() - 20)*30}
 	return cobrar
+	
+	// if (metros < self.limite()) return 500
+	// return metros - self.limite() * 30
+	
+	// cuanto cobra: el mÃ¡ximo entre 500 y 30 * metros
 	}
 	
 	
@@ -84,7 +88,7 @@ object venancio {
 		tipo=_tipo
 	}
 	method manoDeObra(){
-		return 220 * (rounder.roundUp(metrosCuadrados.metrosC() * 0.1))
+		return 220 * (rounder.roundUp(metrosCuadrados.metrosC() / 10.0 ))
 	}
 	method pintarTotal(){
 		cobrar =  self.manoDeObra()+ pintura.precioTotalPintura(tipo)
@@ -93,6 +97,7 @@ object venancio {
 }
 
 object cocina{
+	//inicializar
 	var largo = 0
 	var ancho = 0
 	var alto = 0
@@ -106,6 +111,17 @@ object cocina{
 		return (ancho + largo)* 2* alto
 	}
 }
+
+object metrosCuadrados {
+	var metros = 0
+	method metrosCTest(m){
+		metros = m
+	}
+	method metrosC(){
+		return metros
+	}
+}
+
 object habitacion {
 	var metrosTotales = 0
 	method metrosTotalesTest(m){
@@ -118,6 +134,6 @@ object habitacion {
 object rounder {
 	method roundUp(nro){
 		return -(nro.div(-1)) 
-		// Sí, es feo, por eso queda escondido
+		// Sï¿½, es feo, por eso queda escondido
 	}
 }
