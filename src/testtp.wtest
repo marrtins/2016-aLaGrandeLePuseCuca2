@@ -87,15 +87,12 @@ test "ALDO: Si ahorra 2000 mas puede contratar a venancio debe ser true"{
 	assert.that(aldo.puedeContratarA(venancio))
 }
 test "PINTURA A GRANEL: el costo de una pintura de una superficie de 10m2 debe ser 35"{
-	
 	assert.equals(35,granel.precioPintura(10))  
 }
 test "PINTURA A GRANEL: el costo de una pintura de una superficie de 250m2 debe ser 875"{
-	
 	assert.equals(875,granel.precioPintura(250))
 }
 test"PINTURA A GRANEL: venancio trabaja con pintura a granel; alddo puede contratar a venancio debe ser false"{
-	metrosCuadrados.metrosCTest(41)
 	venancio.cambioDeTipo(granel)
 	assert.notThat(aldo.puedeContratarA(venancio))
 }
