@@ -96,3 +96,5 @@ test"PINTURA A GRANEL: venancio trabaja con pintura a granel; alddo puede contra
 	venancio.cambioDeTipo(granel)
 	assert.notThat(aldo.puedeContratarA(venancio))
 }
+
+//asd
