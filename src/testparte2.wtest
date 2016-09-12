@@ -1,6 +1,82 @@
-
-test "testX" {
-
-	assert.that(true)
-
+import parte2.*
+import fixture2.*
+test "cuanto cobra emanuel por la casa de aldo tiene q ser 400k" {
+	assert.equals(400000,agencia.costoDeEmpleado(emanuel))
 }
+test "cuanto cobra marcos por la casa de aldo tiene q ser 100k" {
+	var marcos = fixture.marcos()
+	assert.equals(100000,agencia.costoDeEmpleado(marcos))
+}
+
+//test "cuanto cobra maros x una casa complicada de 2pisos y 6 amb debe ser 360k"{
+	//var marcos = fixture.marcos()
+	//casa.cambiarHabitaciones(6)
+	//assert.equals(360000,marcos.costoTotal(6,0))
+//}
+test "cuanto cobra lito por la casa de alto tiene q ser 1600"{
+	assert.equals(1600,agencia.costoDeEmpleado(lito))
+}
+test "cuanto cobra eduardo por la casa de aldo tiene q ser 200" {
+	var eduardo = fixture.eduardo()
+	assert.equals(200,agencia.costoDeEmpleado(eduardo))
+}
+//test  "cuanto cobra eduardo x una casa complicada de 4 ambientes tiene q ser 800"{
+	
+//}
+
+test "cuanto cobra roger por la casa de aldo tiene q ser 200"{
+	var roger = fixture.roger()
+	assert.equals(200,agencia.costoDeEmpleado(roger))
+}
+//test "cuanto cobra roger por una casa de 4 pisos y 7 ambientes"
+
+test "la casa de aldo es complicada debe ser false"{
+	assert.notThat(casa.esComplicada())
+}
+test "la superficie de la casa de aldo debe ser 41m2"{
+	assert.equals(41,casa.superficieTotal())
+}
+test "los contratistas q puede pagar aldo son carlos eduardo y roger"{
+	var eduardo = fixture.eduardo()
+	var roger = fixture.roger()
+	assert.that(aldo.lePuedeAbonarA(carlos))
+	assert.that(aldo.lePuedeAbonarA(eduardo))
+	assert.that(aldo.lePuedeAbonarA(roger))
+}
+test "hacer q aldo contrate a roger y q el nuevo presupuesto maximo ahora sea 1160"{
+	var roger = fixture.roger()
+	aldo.contratarA(roger)
+	assert.equals(1160,aldo.presupuesto())
+}
+test "aldo contrata a roger y a carlos luego tiene 2 servicios"{
+	var roger = fixture.roger()
+	aldo.contratarA(carlos)
+	aldo.contratarA(roger)
+	assert.equals(2,aldo.cantidadDeServicios())
+}
+test "aldo intenta contratar a marcos pero no puede"{
+	var marcos = fixture.marcos()
+	assert.notThat(aldo.lePuedeAbonarA(marcos))
+}
+test "aldo contrata a roger, a carlos saber si es un descuidado debe ser false"{
+	var roger = fixture.roger()
+	aldo.contratarA(roger)
+	aldo.contratarA(carlos)
+	assert.notThat(aldo.fueUnDescuidado())
+}
+
+test "aldo ahorra 1000000, contrata a marcos, saber si fue un descuidado debe ser true"{
+	var marcos = fixture.marcos()
+	aldo.ahorrarMas(1000000)
+	aldo.contratarA(marcos)
+	assert.that(aldo.fueUnDescuidado())
+}
+test "aldo contrata a roger ya  carlos, cual es el mas caro debe ser el de carlos"{
+	var roger = fixture.roger()
+	aldo.contratarA(roger)
+	aldo.contratarA(carlos)
+	assert.equals(carlos,aldo.elMasCaro())
+}
+
+
+

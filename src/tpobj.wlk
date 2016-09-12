@@ -105,17 +105,3 @@ object rounder {
 //asd
 
 
-class Empleados {
-	var totalACobrar
-	
-	method cuantoCobra(){
-		return totalACobrar
-	}	
-}
-
-
-
-object agencia {
-	var empleados = [emanuel,marcos,lito,eduardo,roger,raul,carlos,venancio]
-	
-}
