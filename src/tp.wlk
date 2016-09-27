@@ -1,38 +1,55 @@
-import fixture2.*
+import fixture.*
 class ContratistaCondicional {
 	var precioBase
 	var porcentaje
 	var condicion
+	
 	constructor (_precioBase,_porcentaje,_condicion){
 		precioBase = _precioBase
 		porcentaje = _porcentaje
 		condicion = _condicion
 		}
-		method costoTotal(cantAmbientes,_){
-			if (condicion){return precioBase * cantAmbientes * porcentaje}
-			else { return precioBase * cantAmbientes}
+		
+		method costoTotal(metros, cliente){
+			if (condicion){return precioBase * cliente.cantAmbientes() * porcentaje}
+			else { return precioBase * cliente.cantAmbientes()}
 		}
 	
+		method cambiarCondicion(condNueva){
+			condicion = condNueva
+			}
 }
 
-object lito {
-	var precioPorHora = 50
-	var horasPorAmbiente = 16
-	method costoTotal(cantAmbientes,_){
-		return cantAmbientes * precioPorHora * horasPorAmbiente	
+class Albanil {
+	
+	const precioPorHora = 50
+	var horasPorAmbiente
+	
+	constructor (_horasPorAmbiente){
+		horasPorAmbiente = _horasPorAmbiente
 	}
-}
+	
+	method costoTotal(metros, casa){
+		return fixture.aldo().cantAmbientes() * precioPorHora * horasPorAmbiente	
+	}
+}	
 
-object emanuel {
-	var precioPorAmbiente = 100000
-	method costoTotal(cantAmbientes,_){
-		return precioPorAmbiente * cantAmbientes * casa.cantidadDePisos()
+class Arquitecto{
+	var precioPorAmbiente
+	
+	constructor (_precioPorAmbiente){
+		precioPorAmbiente = _precioPorAmbiente
+	}
+	
+	method costoTotal(_,casa){
+		return precioPorAmbiente * casa.cantAmbientes() * casa.cantidadDePisos()
 	}
 }
 
 object casa {
-	var cantHabitaciones = 2
+	var cantHabitaciones = 6
 	var cantPisos = 2
+	
 	method esComplicada(){
 		return cantHabitaciones > 3
 	}
@@ -48,37 +65,81 @@ object casa {
 	method cambiarHabitaciones(cant){
 		cantHabitaciones =cant
 	}
-	method superficieTotal(){
+	method cambiarPisos(cant){
+		cantPisos =cant
+	}
+	method superficieAPintar(){
 		return  cocina.superficie() +habitacion.superficie()
-		
 	}
 }
 
-
 object agencia {
-	var empleados = [lito,emanuel,fixture.eduardo(),fixture.roger(),fixture.marcos(),raul,carlos,venancio]
+	var empleados = [fixture.lito(),fixture.emanuel(),fixture.eduardo(),fixture.roger(),fixture.marcos(),raul,carlos,venancio]
 	
 	method anadirEmpleado(empleado){
 		empleados.add(empleado)
 	}
-	method costoDeEmpleado(empleado){
-		return empleado.costoTotal(casa.cantAmbientes(),aldo.superficieAPintar())
+	
+	method despedirEmpleado(empleado){
+		empleados.remove(empleado)
 	}
 	
-	
+	method costoDeEmpleado(empleado, cliente){
+		return empleado.costoTotal(cliente.superficieAPintar(), cliente)
+	}
 }
-		
-////////////////////////
 
+//Repeticion codigo
 
-object aldo {
-	var ahorros = 6000
-	var precioDeServiciosContratados = []
+object agenciaNueva {
+	var empleados = [fixture.noelia(), fixture.silvina(), fixture.eliana(), fixture.dodain()]
+	
+	method anadirEmpleado(empleado){
+		empleados.add(empleado)
+	}
+	
+	method despedirEmpleado(empleado){
+		empleados.remove(empleado)
+	}
+	
+	method costoDeEmpleado(empleado, cliente){
+		return empleado.costoTotal(cliente.superficieAPintar(), cliente)
+	}
+}
+
+class Persona{
+	
+	var ahorros
+	var precioDeServiciosContratados
 	var servicioMasCaro 
-	var costoMasAlto = 0
+	var costoMasAlto
+	var ambientes
+	var cantPisos
+	
+	constructor (_ahorros, _precioDeServiciosContratados, _servicioMasCaro, _costoMasAlto, _ambientes, _cantPisos){
+		ahorros = _ahorros
+		precioDeServiciosContratados = _precioDeServiciosContratados
+		servicioMasCaro = _servicioMasCaro
+		costoMasAlto = _costoMasAlto
+		ambientes = _ambientes
+		cantPisos = _cantPisos
+	}
+	
+	method cantidadDePisos(){
+		return cantPisos
+		}
+	
+	method esComplicada(){
+		return self.cantAmbientes() > 3	
+	}
+	
+	method cantAmbientes(){
+		return ambientes.size()
+	}
 	method ahorrarMas(masAhorro){
 		ahorros += masAhorro
 	}
+	
 	method superficieAPintar(){
 		return  cocina.superficie() +habitacion.superficie()
 		
@@ -87,24 +148,24 @@ object aldo {
 		return ahorros *0.2
 	}
 	method puedeContratarA(persona){
-		return self.presupuesto() > persona.costoTotal(self.superficieAPintar()) 
+		return self.presupuesto() > persona.costoTotal(self.superficieAPintar(), self) 
 	}
 	
 	method lePuedeAbonarA(persona){
-		return self.presupuesto() > agencia.costoDeEmpleado(persona)
+		return self.presupuesto() > agencia.costoDeEmpleado(persona, self)
 	}
 	method disminuirAhorros(perdida){
 		ahorros -= perdida
 	}
 	method contratarA(persona){
-		var costo = agencia.costoDeEmpleado(persona)
+		var costo = agencia.costoDeEmpleado(persona, self)
 		if (self.lePuedeAbonarA(persona).negate()){
 			throw new Exception("No se le puede abonar")
 		}
 		self.disminuirAhorros(costo)
 		precioDeServiciosContratados.add(costo)
 			self.servicioMasCaro(persona,costo)
-		return agencia.costoDeEmpleado(persona)	
+		return agencia.costoDeEmpleado(persona, casa)	
 	}
 	method fueUnDescuidado(){
 		return self.precioMasCaro() > 5000
@@ -126,8 +187,6 @@ object aldo {
 	}
 }
 
-
-
 object balde {
 	var precioCada50 = 200
 	method nuevoPrecio(nuevoPrecio){
@@ -142,6 +201,7 @@ object balde {
 	}
 	
 }
+
 object granel {
 	var costoPorLitro = 3.50
 	method precioPintura(metros){
@@ -154,19 +214,18 @@ object raul {
 	method costoManoDeObra(metros){
 		return 25 * metros
 	}
-	method costoTotal(_,metros) { 
+	method costoTotal(metros,casa) { 
 		return  self.costoManoDeObra(metros) + tipo.precioPintura(metros) 
 	}
 }
 
 object carlos {
 		
-	method costoTotal(_,metros){
+	method costoTotal(metros,casa){
 		return (500).max(500+(metros - 20)*30)
 	}
 		
 }
-
 
 object venancio {
 	
@@ -177,7 +236,7 @@ object venancio {
 	method costoManoDeObra(metros){
 		return 220 * (rounder.roundUp(metros / 10.0 ))
 	}
-	method costoTotal(_,metros){
+	method costoTotal(metros, casa){
 		return  self.costoManoDeObra(metros)+ tipo.precioPintura(metros)
 	}	
 }
@@ -197,12 +256,22 @@ object habitacion {
 		return metrosTotales
 	}
 }
+
+object metrosCuadrados {
+	var metros = 0
+	method metrosCTest(m){
+		metros = m
+	}
+	method metrosC(){
+		return metros
+	}
+}
+
 object rounder {
 	method roundUp(nro){
 		return -(nro.div(-1)) 
-		// S�, es feo, por eso queda escondido
 	}
 }
-//asd
+
 
 

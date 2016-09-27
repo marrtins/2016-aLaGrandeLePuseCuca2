@@ -1,0 +1,218 @@
+import tp.*
+import fixture.*
+
+test "PINTURA: Latas necesarias para 251m2 deben ser 6" {
+	assert.equals(6,balde.latasNecesarias(251))
+}
+
+test "PINTURA: Latas necesarias para 250m2deben ser 5"{
+	assert.equals(5,balde.latasNecesarias(250))
+}
+test "PINTURA: Latas necesarias para 249m2deben ser 5"{
+	assert.equals(5,balde.latasNecesarias(249))
+}
+
+test "PINTURA: Costo de pintura de una superfi de 10m2 debe ser 200" {
+	assert.equals(200,balde.precioPintura(10))
+}
+
+test "PINTURA: Costo de pintura de una superfi de 250m2 debe ser 1000" {
+	assert.equals(1000,balde.precioPintura(250))
+}
+
+
+test "PINTORES: mano de obra de raul por 20m2 debe ser 500"{
+	assert.equals(500,raul.costoManoDeObra(20))
+}
+test "PINTORES: total de raul por 20m2 debe ser 700"{
+	assert.equals(700,raul.costoTotal(20,casa))
+}
+
+test "PINTORES: total de carlos por 20m2 debe ser 500"{
+	
+	assert.equals(500,carlos.costoTotal(20, casa))
+}
+test "PINTORES: total de carlos por 32m2 debe ser 860"{
+	
+	assert.equals(860,carlos.costoTotal(32, casa))
+}
+test "PINTORES: mano de obra de venancio por 32m2 debe ser 880"{
+	
+	assert.equals(880,venancio.costoManoDeObra(32))
+}
+test "PINTORES: mano de obra de venancio por 20m2 debe ser 440"{
+	assert.equals(440,venancio.costoManoDeObra(20))
+}
+
+test "PINTORES: total de venancio por 32m2 debe ser 1080"{
+	assert.equals(1080,venancio.costoTotal(32, casa))
+}
+test "AMBIENTES: Superficie de la cocina debe ser 21m"{
+	assert.equals(21,cocina.superficie())
+}
+test "AMBIENTES: Superficie de la habitacion debe ser 20m"{
+	assert.equals(20,habitacion.superficie())
+}
+
+test "ALDO: Superficie total a pintar para aldo debe ser 41"{
+	var aldo = fixture.aldo()
+	assert.equals(41,aldo.superficieAPintar())
+}
+test "ALDO: Presupuesto maximo debe ser 1200"{
+	var aldo = fixture.aldo()
+	assert.equals(1200,aldo.presupuesto())
+}
+test "ALDO: Puede contratar a raul debe ser no"{
+	var aldo = fixture.aldo()
+	assert.notThat(aldo.puedeContratarA(raul))
+}
+test"ALDO: Si ahorra 2000 mas puede contratar a raul debe ser si"{
+	var aldo = fixture.aldo()
+	aldo.ahorrarMas(2000)
+	assert.that(aldo.puedeContratarA(raul))
+}
+
+test "ALDO: Si ahorra 1000 mas, la pintura ahora cuesta 400 aldo puede contratar a raul debe ser falso"{
+	var aldo = fixture.aldo()
+	metrosCuadrados.metrosCTest(41) // mismo problema q arriba
+	aldo.ahorrarMas(1000)
+	balde.nuevoPrecio(400)
+	assert.notThat(aldo.puedeContratarA(raul))
+}
+test"ALDO: Puede contratar a carlos debe ser true"{
+	var aldo = fixture.aldo()
+	metrosCuadrados.metrosCTest(41)
+	assert.that(aldo.puedeContratarA(carlos))
+}
+test"ALDO: Puede contratar a venancio debe ser false"{
+	var aldo = fixture.aldo()
+	metrosCuadrados.metrosCTest(41)
+	assert.notThat(aldo.puedeContratarA(venancio))
+}
+test "ALDO: Si ahorra 2000 mas puede contratar a venancio debe ser true"{
+	var aldo = fixture.aldo()
+	metrosCuadrados.metrosCTest(41)
+	aldo.ahorrarMas(2000)
+	assert.that(aldo.puedeContratarA(venancio))
+}
+test "PINTURA A GRANEL: el costo de una pintura de una superficie de 10m2 debe ser 35"{
+	assert.equals(35,granel.precioPintura(10))  
+}
+test "PINTURA A GRANEL: el costo de una pintura de una superficie de 250m2 debe ser 875"{
+	assert.equals(875,granel.precioPintura(250))
+}
+test"PINTURA A GRANEL: venancio trabaja con pintura a granel; aldo puede contratar a venancio debe ser false"{
+	var aldo = fixture.aldo()
+	venancio.cambioDeTipo(granel)
+	assert.notThat(aldo.puedeContratarA(venancio))
+}
+
+// Parte 2
+
+test "cuanto cobra emanuel por la casa de aldo tiene q ser 400k" {
+	var aldo = fixture.aldo()
+	var emanuel = fixture.emanuel()
+	assert.equals(400000,agencia.costoDeEmpleado(emanuel, aldo))
+}
+test "cuanto cobra marcos por la casa de aldo tiene q ser 100k" {
+	var aldo = fixture.aldo()
+	var marcos = fixture.marcos()
+	marcos.cambiarCondicion(aldo.esComplicada())
+	assert.equals(100000,agencia.costoDeEmpleado(marcos, aldo))
+}
+
+test "cuanto cobra marcos x una casa complicada de 2pisos y 6 amb debe ser 360k"{
+	var marcos = fixture.marcos()
+	casa.cambiarHabitaciones(6)
+	assert.equals(360000,marcos.costoTotal(0, casa))
+}
+
+test "cuanto cobra lito por la casa de aldo tiene q ser 1600"{
+	var aldo = fixture.aldo()
+	var lito = fixture.lito()
+	assert.equals(1600,agencia.costoDeEmpleado(lito, aldo))
+}
+test "cuanto cobra eduardo por la casa de aldo tiene q ser 200" {
+	var aldo = fixture.aldo()
+	var eduardo = fixture.eduardo()
+	eduardo.cambiarCondicion(aldo.esComplicada())
+	assert.equals(200,agencia.costoDeEmpleado(eduardo, aldo))
+}
+test  "cuanto cobra eduardo x una casa complicada de 4 ambientes tiene q ser 800"{
+	var eduardo = fixture.eduardo()
+	casa.cambiarHabitaciones(4)
+	eduardo.cambiarCondicion(casa.esComplicada())
+	assert.equals(800,agencia.costoDeEmpleado(eduardo, casa))
+}
+
+test "cuanto cobra roger por la casa de aldo tiene q ser 200"{
+	var aldo = fixture.aldo()
+	var roger = fixture.roger()
+	assert.equals(200,agencia.costoDeEmpleado(roger, aldo))
+}
+
+test "cuanto cobra roger por una casa de 4 pisos y 7 ambientes"{
+	casa.cambiarPisos(4)
+	casa.cambiarHabitaciones(7)
+	var roger = fixture.roger()
+	assert.equals(770,agencia.costoDeEmpleado(roger, casa))
+}
+
+test "la casa de aldo es complicada debe ser false"{
+	var aldo = fixture.aldo()
+	assert.notThat(aldo.esComplicada())
+}
+test "la superficie de la casa de aldo debe ser 41m2"{
+	assert.equals(41,casa.superficieAPintar())
+}
+test "los contratistas q puede pagar aldo son carlos eduardo y roger"{
+	var aldo = fixture.aldo()
+	var eduardo = fixture.eduardo()
+	var roger = fixture.roger()
+	assert.that(aldo.lePuedeAbonarA(carlos))
+	assert.that(aldo.lePuedeAbonarA(eduardo))
+	assert.that(aldo.lePuedeAbonarA(roger))
+}
+test "hacer q aldo contrate a roger y q el nuevo presupuesto maximo ahora sea 1160"{
+	var aldo = fixture.aldo()
+	var roger = fixture.roger()
+	aldo.contratarA(roger)
+	assert.equals(1160,aldo.presupuesto())
+}
+test "aldo contrata a roger y a carlos luego tiene 2 servicios"{
+	var aldo = fixture.aldo()
+	var roger = fixture.roger()
+	aldo.contratarA(carlos)
+	aldo.contratarA(roger)
+	assert.equals(2,aldo.cantidadDeServicios())
+}
+test "aldo intenta contratar a marcos pero no puede"{
+	var aldo = fixture.aldo()
+	var marcos = fixture.marcos()
+	assert.notThat(aldo.lePuedeAbonarA(marcos))
+}
+test "aldo contrata a roger, a carlos saber si es un descuidado debe ser false"{
+	var aldo = fixture.aldo()
+	var roger = fixture.roger()
+	aldo.contratarA(roger)
+	aldo.contratarA(carlos)
+	assert.notThat(aldo.fueUnDescuidado())
+}
+
+test "aldo ahorra 1000000, contrata a marcos, saber si fue un descuidado debe ser true"{
+	var aldo = fixture.aldo()
+	var marcos = fixture.marcos()
+	aldo.ahorrarMas(1000000)
+	aldo.contratarA(marcos)
+	assert.that(aldo.fueUnDescuidado())
+}
+test "aldo contrata a roger ya  carlos, cual es el mas caro debe ser el de carlos"{
+	var aldo = fixture.aldo()
+	var roger = fixture.roger()
+	aldo.contratarA(roger)
+	aldo.contratarA(carlos)
+	assert.equals(carlos,aldo.elMasCaro())
+}
+
+
+
