@@ -7,12 +7,16 @@ class ContratistaCondicional {
 	constructor (_precioBase,_porcentaje,_condicion){
 		precioBase = _precioBase
 		porcentaje = _porcentaje
-		condicion = _condicion
+		condicion = _condicion //TODO: No hay que guardarse un booleano. Puede resolverse con herencia
 		}
 		
-		method costoTotal(metros, cliente){
-			if (condicion){return precioBase * cliente.cantAmbientes() * porcentaje}
-			else { return precioBase * cliente.cantAmbientes()}
+		method costoTotal(metros, cliente){  //TODO: Ojo q todos los costos totales son con 1 parametro: la casa.
+			if (condicion){
+				return precioBase * cliente.cantAmbientes() * porcentaje
+			}
+			else { 
+				return precioBase * cliente.cantAmbientes()
+			}
 		}
 	
 		method cambiarCondicion(condNueva){
@@ -29,7 +33,7 @@ class Albanil {
 		horasPorAmbiente = _horasPorAmbiente
 	}
 	
-	method costoTotal(metros, casa){
+	method costoTotal(metros, casa){ //TODO: ojo! No puede ser el de aldo
 		return fixture.aldo().cantAmbientes() * precioPorHora * horasPorAmbiente	
 	}
 }	
@@ -46,7 +50,7 @@ class Arquitecto{
 	}
 }
 
-class Agencia{
+class Agencia{ //TODO: La responsabilidad de saber a quiénes puede contratar un cliente está acá.
 	var empleados
 	
 	constructor(_empleados){
@@ -65,7 +69,7 @@ class Agencia{
 		empleados.remove(empleado)
 	}
 	
-	method costoDeEmpleado(empleado, cliente){
+	method costoDeEmpleado(empleado, cliente){ //TODO: Debe volar. No es RESPONSABILIDAD de la agencia
 		return empleado.costoTotal(cliente.superficieAPintar(), cliente)
 	}
 }
@@ -77,7 +81,7 @@ class Persona{
 	var servicioMasCaro 
 	var costoMasAlto
 	var cantPisos
-	var habitaciones
+	var habitaciones //TODO: Dentro de la casa!!!
 		
 	constructor (_ahorros, _precioDeServiciosContratados, _servicioMasCaro, _costoMasAlto, _cantPisos, _habitaciones){
 		ahorros = _ahorros
@@ -88,19 +92,19 @@ class Persona{
 		habitaciones = _habitaciones
 }
 	
-	method cantidadDePisos(){
+	method cantidadDePisos(){ //TODO: No guardar esto directamente en la persona
 		return cantPisos
 		}
 	
-	method tieneMasDeDosPisos(){
+	method tieneMasDeDosPisos(){ //TODO: No guardar esto directamente en la persona
 		return cantPisos > 2
 	}
 	
-	method esComplicada(){
+	method esComplicada(){ //TODO: No guardar esto directamente en la persona
 		return habitaciones.size() > 3	
 	}
 	
-	method cantAmbientes(){
+	method cantAmbientes(){ //TODO: No guardar esto directamente en la persona
 		return habitaciones.size()
 	}
 	
@@ -108,7 +112,7 @@ class Persona{
 		ahorros += masAhorro
 	}
 	
-	method superficieAPintar(){
+	method superficieAPintar(){  //TODO: No guardar esto directamente en la persona
 		return  habitaciones.sum()
 	}
 	
@@ -116,8 +120,8 @@ class Persona{
 		return ahorros * 0.2
 	}
 	
-	method puedeContratarA(persona){
-		return self.presupuesto() > persona.costoTotal(self.superficieAPintar(), self) 
+	method puedeContratarA(contratista){
+		return self.presupuesto() > contratista.costoTotal(self.superficieAPintar(), self) //TODO: Volar primer parámetro. Pasar casa por parámetro. 
 	}
 	
 	method lePuedeAbonarA(persona){
@@ -128,9 +132,9 @@ class Persona{
 		ahorros -= perdida
 	}
 	
-	method contratarA(persona) {
+	method contratarA(persona) { //TODO: mirar los puntos q faltan hacer. ¿cambia la responsabilidad de contratar?
 	
-	var costo = fixture.agencia().costoDeEmpleado(persona, self)
+	var costo = fixture.agencia().costoDeEmpleado(persona, self) //TODO: 2 errores. 1: el q saben, que no hay q preguntarle esto a la agencia, porque el costo no es responsabilidad de la agencia. Además, desde el código del sistema NO SE PUEDE USAR EL FIXTURE.
 		if (self.lePuedeAbonarA(persona).negate()){
 			throw new Exception("No se le puede abonar")
 		}
@@ -152,13 +156,13 @@ class Persona{
 		return precioDeServiciosContratados.size()
 	}
 	
-	method servicioMasCaro(persona,costo){
+	method servicioMasCaro(persona,costo){ //TODO: Volar este setter
 		if(costo > costoMasAlto){costoMasAlto = costo 
 			servicioMasCaro = persona
 		}
 	}
 
-	method elMasCaro(){
+	method elMasCaro(){ //TODO: Está mal guardarse esto. Si tienen una colección de costos, pueden calcular el más caro
 		return servicioMasCaro
 	}
 }
@@ -169,12 +173,12 @@ class PersonaDescuidadaPisos inherits Persona {
 	}
 	
 	override method fueUnDescuidado(){
-		return cantPisos < 3	
+		return cantPisos < 3 // TODO: No está completa la lógica
 	}
 }
 
-object casa {
-	var cantHabitaciones = 6
+object casa { //TODO: Clase Casa
+	var cantHabitaciones = 6 //TODO: Colección de habitaciones
 	var cantPisos = 2
 	
 	method esComplicada(){
@@ -195,7 +199,7 @@ object casa {
 	method cambiarPisos(cant){
 		cantPisos =cant
 	}
-	method superficieAPintar(){
+	method superficieAPintar(){ //TODO: Cambiar
 		return  cocina.superficie() + habitacion.superficie()
 	}
 }
@@ -255,7 +259,7 @@ object venancio {
 	}	
 }
 
-object cocina{
+object cocina{ //TODO: clase Habitacion
 	var largo = 2
 	var ancho = 1
 	var alto = 3.5
@@ -264,7 +268,7 @@ object cocina{
 	}
 }
 
-object habitacion {
+object habitacion { //TODO: Nombre menos parecido arriba. cuartito
 	var metrosTotales = 20
 	method superficie(){
 		return metrosTotales
