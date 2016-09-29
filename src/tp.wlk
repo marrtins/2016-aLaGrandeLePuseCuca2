@@ -46,6 +46,133 @@ class Arquitecto{
 	}
 }
 
+class Agencia{
+	var empleados
+	
+	constructor(_empleados){
+		empleados = _empleados
+	}
+	
+	method empleados(){
+		return empleados
+	}
+
+	method anadirEmpleado(empleado){
+		empleados.add(empleado)
+	}
+	
+	method despedirEmpleado(empleado){
+		empleados.remove(empleado)
+	}
+	
+	method costoDeEmpleado(empleado, cliente){
+		return empleado.costoTotal(cliente.superficieAPintar(), cliente)
+	}
+}
+
+class Persona{
+	
+	var ahorros
+	var precioDeServiciosContratados
+	var servicioMasCaro 
+	var costoMasAlto
+	var cantPisos
+	var habitaciones
+		
+	constructor (_ahorros, _precioDeServiciosContratados, _servicioMasCaro, _costoMasAlto, _cantPisos, _habitaciones){
+		ahorros = _ahorros
+		precioDeServiciosContratados = _precioDeServiciosContratados
+		servicioMasCaro = _servicioMasCaro
+		costoMasAlto = _costoMasAlto
+		cantPisos = _cantPisos
+		habitaciones = _habitaciones
+}
+	
+	method cantidadDePisos(){
+		return cantPisos
+		}
+	
+	method tieneMasDeDosPisos(){
+		return cantPisos > 2
+	}
+	
+	method esComplicada(){
+		return habitaciones.size() > 3	
+	}
+	
+	method cantAmbientes(){
+		return habitaciones.size()
+	}
+	
+	method ahorrarMas(masAhorro){
+		ahorros += masAhorro
+	}
+	
+	method superficieAPintar(){
+		return  habitaciones.sum()
+	}
+	
+	method presupuesto() {
+		return ahorros * 0.2
+	}
+	
+	method puedeContratarA(persona){
+		return self.presupuesto() > persona.costoTotal(self.superficieAPintar(), self) 
+	}
+	
+	method lePuedeAbonarA(persona){
+		return self.presupuesto() > fixture.agencia().costoDeEmpleado(persona, self)
+	}
+	
+	method disminuirAhorros(perdida){
+		ahorros -= perdida
+	}
+	
+	method contratarA(persona) {
+	
+	var costo = fixture.agencia().costoDeEmpleado(persona, self)
+		if (self.lePuedeAbonarA(persona).negate()){
+			throw new Exception("No se le puede abonar")
+		}
+		self.disminuirAhorros(costo)
+		precioDeServiciosContratados.add(costo)
+		self.servicioMasCaro(persona,costo)
+		return fixture.agencia().costoDeEmpleado(persona, casa)	
+	}
+	
+	method fueUnDescuidado(){
+		return self.precioMasCaro() > 5000
+	}
+	
+	method precioMasCaro(){
+		return precioDeServiciosContratados.max()
+	}
+	
+	method cantidadDeServicios(){
+		return precioDeServiciosContratados.size()
+	}
+	
+	method servicioMasCaro(persona,costo){
+		if(costo > costoMasAlto){costoMasAlto = costo 
+			servicioMasCaro = persona
+		}
+	}
+
+	method elMasCaro(){
+		return servicioMasCaro
+	}
+}
+
+class PersonaDescuidadaPisos inherits Persona {
+	
+	constructor (_ahorros, _precioDeServiciosContratados, _servicioMasCaro, _costoMasAlto, _cantPisos, _habitaciones) = super (_ahorros, _precioDeServiciosContratados, _servicioMasCaro, _costoMasAlto, _cantPisos, _habitaciones){
+	}
+	
+	override method fueUnDescuidado(){
+		return cantPisos < 3	
+	}
+}
+
 object casa {
 	var cantHabitaciones = 6
 	var cantPisos = 2
@@ -69,121 +196,7 @@ object casa {
 		cantPisos =cant
 	}
 	method superficieAPintar(){
-		return  cocina.superficie() +habitacion.superficie()
-	}
-}
-
-object agencia {
-	var empleados = [fixture.lito(),fixture.emanuel(),fixture.eduardo(),fixture.roger(),fixture.marcos(),raul,carlos,venancio]
-	
-	method anadirEmpleado(empleado){
-		empleados.add(empleado)
-	}
-	
-	method despedirEmpleado(empleado){
-		empleados.remove(empleado)
-	}
-	
-	method costoDeEmpleado(empleado, cliente){
-		return empleado.costoTotal(cliente.superficieAPintar(), cliente)
-	}
-}
-
-//Repeticion codigo
-
-object agenciaNueva {
-	var empleados = [fixture.noelia(), fixture.silvina(), fixture.eliana(), fixture.dodain()]
-	
-	method anadirEmpleado(empleado){
-		empleados.add(empleado)
-	}
-	
-	method despedirEmpleado(empleado){
-		empleados.remove(empleado)
-	}
-	
-	method costoDeEmpleado(empleado, cliente){
-		return empleado.costoTotal(cliente.superficieAPintar(), cliente)
-	}
-}
-
-class Persona{
-	
-	var ahorros
-	var precioDeServiciosContratados
-	var servicioMasCaro 
-	var costoMasAlto
-	var ambientes
-	var cantPisos
-	
-	constructor (_ahorros, _precioDeServiciosContratados, _servicioMasCaro, _costoMasAlto, _ambientes, _cantPisos){
-		ahorros = _ahorros
-		precioDeServiciosContratados = _precioDeServiciosContratados
-		servicioMasCaro = _servicioMasCaro
-		costoMasAlto = _costoMasAlto
-		ambientes = _ambientes
-		cantPisos = _cantPisos
-	}
-	
-	method cantidadDePisos(){
-		return cantPisos
-		}
-	
-	method esComplicada(){
-		return self.cantAmbientes() > 3	
-	}
-	
-	method cantAmbientes(){
-		return ambientes.size()
-	}
-	method ahorrarMas(masAhorro){
-		ahorros += masAhorro
-	}
-	
-	method superficieAPintar(){
-		return  cocina.superficie() +habitacion.superficie()
-		
-	}
-	method presupuesto() {
-		return ahorros *0.2
-	}
-	method puedeContratarA(persona){
-		return self.presupuesto() > persona.costoTotal(self.superficieAPintar(), self) 
-	}
-	
-	method lePuedeAbonarA(persona){
-		return self.presupuesto() > agencia.costoDeEmpleado(persona, self)
-	}
-	method disminuirAhorros(perdida){
-		ahorros -= perdida
-	}
-	method contratarA(persona){
-		var costo = agencia.costoDeEmpleado(persona, self)
-		if (self.lePuedeAbonarA(persona).negate()){
-			throw new Exception("No se le puede abonar")
-		}
-		self.disminuirAhorros(costo)
-		precioDeServiciosContratados.add(costo)
-			self.servicioMasCaro(persona,costo)
-		return agencia.costoDeEmpleado(persona, casa)	
-	}
-	method fueUnDescuidado(){
-		return self.precioMasCaro() > 5000
-	}
-	method precioMasCaro(){
-		return precioDeServiciosContratados.max()
-	}
-	
-	method cantidadDeServicios(){
-		return precioDeServiciosContratados.size()
-	}
-	method servicioMasCaro(persona,costo){
-		if(costo > costoMasAlto){costoMasAlto = costo 
-			servicioMasCaro = persona
-		}
-	}
-	method elMasCaro(){
-		return servicioMasCaro
+		return  cocina.superficie() + habitacion.superficie()
 	}
 }
 
@@ -203,6 +216,7 @@ object balde {
 }
 
 object granel {
+
 	var costoPorLitro = 3.50
 	method precioPintura(metros){
 		return costoPorLitro * metros
@@ -246,7 +260,7 @@ object cocina{
 	var ancho = 1
 	var alto = 3.5
 	method superficie(){
-		return (ancho + largo)* 2* alto
+		return (ancho + largo)* 2 * alto
 	}
 }
 

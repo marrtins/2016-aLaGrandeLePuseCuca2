@@ -51,7 +51,7 @@ test "AMBIENTES: Superficie de la cocina debe ser 21m"{
 	assert.equals(21,cocina.superficie())
 }
 test "AMBIENTES: Superficie de la habitacion debe ser 20m"{
-	assert.equals(20,habitacion.superficie())
+		assert.equals(20,habitacion.superficie())
 }
 
 test "ALDO: Superficie total a pintar para aldo debe ser 41"{
@@ -112,13 +112,13 @@ test"PINTURA A GRANEL: venancio trabaja con pintura a granel; aldo puede contrat
 test "cuanto cobra emanuel por la casa de aldo tiene q ser 400k" {
 	var aldo = fixture.aldo()
 	var emanuel = fixture.emanuel()
-	assert.equals(400000,agencia.costoDeEmpleado(emanuel, aldo))
+	assert.equals(400000,fixture.agencia().costoDeEmpleado(emanuel, aldo))
 }
 test "cuanto cobra marcos por la casa de aldo tiene q ser 100k" {
 	var aldo = fixture.aldo()
 	var marcos = fixture.marcos()
 	marcos.cambiarCondicion(aldo.esComplicada())
-	assert.equals(100000,agencia.costoDeEmpleado(marcos, aldo))
+	assert.equals(100000,fixture.agencia().costoDeEmpleado(marcos, aldo))
 }
 
 test "cuanto cobra marcos x una casa complicada de 2pisos y 6 amb debe ser 360k"{
@@ -130,32 +130,32 @@ test "cuanto cobra marcos x una casa complicada de 2pisos y 6 amb debe ser 360k"
 test "cuanto cobra lito por la casa de aldo tiene q ser 1600"{
 	var aldo = fixture.aldo()
 	var lito = fixture.lito()
-	assert.equals(1600,agencia.costoDeEmpleado(lito, aldo))
+	assert.equals(1600,fixture.agencia().costoDeEmpleado(lito, aldo))
 }
 test "cuanto cobra eduardo por la casa de aldo tiene q ser 200" {
 	var aldo = fixture.aldo()
 	var eduardo = fixture.eduardo()
 	eduardo.cambiarCondicion(aldo.esComplicada())
-	assert.equals(200,agencia.costoDeEmpleado(eduardo, aldo))
+	assert.equals(200,fixture.agencia().costoDeEmpleado(eduardo, aldo))
 }
 test  "cuanto cobra eduardo x una casa complicada de 4 ambientes tiene q ser 800"{
 	var eduardo = fixture.eduardo()
 	casa.cambiarHabitaciones(4)
 	eduardo.cambiarCondicion(casa.esComplicada())
-	assert.equals(800,agencia.costoDeEmpleado(eduardo, casa))
+	assert.equals(800,fixture.agencia().costoDeEmpleado(eduardo, casa))
 }
 
 test "cuanto cobra roger por la casa de aldo tiene q ser 200"{
 	var aldo = fixture.aldo()
 	var roger = fixture.roger()
-	assert.equals(200,agencia.costoDeEmpleado(roger, aldo))
+	assert.equals(200,fixture.agencia().costoDeEmpleado(roger, aldo))
 }
 
 test "cuanto cobra roger por una casa de 4 pisos y 7 ambientes"{
 	casa.cambiarPisos(4)
 	casa.cambiarHabitaciones(7)
 	var roger = fixture.roger()
-	assert.equals(770,agencia.costoDeEmpleado(roger, casa))
+	assert.equals(770,fixture.agencia().costoDeEmpleado(roger, casa))
 }
 
 test "la casa de aldo es complicada debe ser false"{
@@ -163,7 +163,8 @@ test "la casa de aldo es complicada debe ser false"{
 	assert.notThat(aldo.esComplicada())
 }
 test "la superficie de la casa de aldo debe ser 41m2"{
-	assert.equals(41,casa.superficieAPintar())
+	var aldo = fixture.aldo()
+	assert.equals(41,aldo.superficieAPintar())
 }
 test "los contratistas q puede pagar aldo son carlos eduardo y roger"{
 	var aldo = fixture.aldo()
@@ -214,5 +215,77 @@ test "aldo contrata a roger ya  carlos, cual es el mas caro debe ser el de carlo
 	assert.equals(carlos,aldo.elMasCaro())
 }
 
+// Parte 3
 
+test "Saber el costo del trabajo de Noelia para la casa de Damián"{
+	var noelia = fixture.noelia()
+	var damian = fixture.damian()
+	assert.equals(2000, noelia.costoTotal(0, damian))
+}
 
+test "Saber el costo del trabajo de Silvina para la casa de Damián"{
+	var silvina = fixture.silvina()
+	var damian = fixture.damian()
+	silvina.cambiarCondicion(damian.tieneMasDeDosPisos())
+	assert.equals(500, silvina.costoTotal(0, damian))
+}
+
+test "Saber el costo de Noelia para la casa de Milena"{
+	var noelia = fixture.noelia()
+	var milena = fixture.milena()
+	noelia.cambiarCondicion(milena.esComplicada())
+	assert.equals(500, noelia.costoTotal(0, milena))
+}
+
+test "Saber el costo de Eliana para la casa de Damián"{
+	var eliana = fixture.eliana()
+	var damian = fixture.damian()
+	eliana.cambiarCondicion(damian.esComplicada())
+	assert.equals(57600, eliana.costoTotal(0, damian))
+}
+
+test "Saber qué contratistas de la agencia nueva puede contratar Milena"{
+	var milena = fixture.milena()
+	var agenciaNueva = fixture.agenciaNueva()
+	var silvina = fixture.silvina()
+	assert.equals(silvina, agenciaNueva.empleados().forEach({contratista => milena.puedeContratarA(contratista)}))
+}
+
+test "Saber qué contratistas de la agencia nueva puede contratar Damián"{
+	var damian = fixture.damian()
+	var noelia = fixture.noelia()
+	var silvina = fixture.silvina()
+	var dodain = fixture.dodain()
+	var agenciaNueva = fixture.agenciaNueva()
+	assert.equals([noelia, silvina, dodain], agenciaNueva.empleados().forEach({contratista => damian.puedeContratarA(contratista)}))
+	}
+
+test "Hacer que Damián ahorre $ 1.500.000. Contratar a Eliana y a Silvina. Preguntar si Damián fue descuidado."{
+	var damian = fixture.damian()
+	var eliana = fixture.eliana()
+	var silvina = fixture.silvina()
+	damian.ahorrarMas(1500000)
+	damian.contratarA(eliana)
+	damian.contratarA(silvina)
+	assert.notThat(damian.fueUnDescuidado())
+}
+
+test "Hacer que Milena ahorre $ 1.500.000. Contratar a Eliana y a Silvina. Preguntar si Milena fue descuidada."{
+	var eliana = fixture.eliana()
+	var silvina = fixture.silvina()
+	var milena = fixture.milena()
+	milena.ahorrarMas(1500000)
+	milena.contratarA(eliana)
+	milena.contratarA(silvina)
+	assert.that(milena.fueUnDescuidado())
+}
+
+//test "Hacer que Milena ahorre $ 1.500.000. Contratar 2 veces a Eliana y a Silvina. Preguntar a quiénes les hizo un trabajo Milena."{
+//	var eliana = fixture.eliana()
+//	var silvina = fixture.silvina()
+//	var milena = fixture.milena()
+//	milena.ahorrarMas(1500000)
+//	2.times{milena.contratarA(eliana)}
+//	2.times{milena.contratarA(silvina)}
+	
+//}

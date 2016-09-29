@@ -22,7 +22,7 @@ object fixture {
 	}
 
 	method aldo(){
-		return new Persona(6000, [], null , 0, [habitacion, cocina], 2) 
+		return new Persona(6000, [], null , 0, 2, [21, 20]) 
 	}
 	
 	method noelia(){
@@ -39,6 +39,22 @@ object fixture {
 	
 	method dodain(){
 		return new Albanil(24)
+	}
+	
+	method agencia(){
+		return new Agencia([self.lito(),self.emanuel(),self.eduardo(),self.roger(),self.marcos(),raul,carlos,venancio])
+	}
+	
+	method agenciaNueva(){
+		return new Agencia([self.noelia(), self.silvina(), self.eliana(), self.dodain()])
+	}
+	
+	method milena(){
+		return new Persona(2000, [], null , 0, 3, [36, 12])
+	}
+	
+	method damian(){
+		return new PersonaDescuidadaPisos(250000, [], null , 0, 4, [36, 12, 18, 24])
 	}
 }
 
