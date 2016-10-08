@@ -1,207 +1,184 @@
 import fixture.*
-class ContratistaCondicional {
+class Contratista {
 	var precioBase
-	var porcentaje
-	var condicion
-	
-	constructor (_precioBase,_porcentaje,_condicion){
+	constructor(_precioBase){
 		precioBase = _precioBase
-		porcentaje = _porcentaje
-		condicion = _condicion //TODO: No hay que guardarse un booleano. Puede resolverse con herencia
-		}
-		
-		method costoTotal(metros, cliente){  //TODO: Ojo q todos los costos totales son con 1 parametro: la casa.
-			if (condicion){
-				return precioBase * cliente.cantAmbientes() * porcentaje
+	}
+	method precioBase(){
+		return precioBase
+	}
+	method costoTotal(casa){
+		return self.precioBase() * casa.cantAmbientes()
+	}
+	method loTomoDePunto(persona){
+		return persona.cuantasVecesMeContrataste(self) > 1
+	}
+}
+
+class Arquitecto inherits Contratista {
+	constructor(precioBase) = super(precioBase)
+	override method costoTotal(casa){
+		return self.precioBase() * casa.cantidadPisos() * casa.cantAmbientes()
+	}
+}
+
+class MaestroMayorDeObra inherits Contratista {
+	constructor(precioBase) = super(precioBase)
+	override method costoTotal(casa){
+		if (casa.esComplicada()){
+				return self.precioBase() * casa.cantAmbientes() * 1.2
 			}
 			else { 
-				return precioBase * cliente.cantAmbientes()
+				 return super(casa)
 			}
 		}
-	
-		method cambiarCondicion(condNueva){
-			condicion = condNueva
+}
+
+class Albanil { //DUDA: esta bien que no herede de contratista? pq este no necesita de un precio base ya q para todos es lo mismo, lo q necesita es la cant d hrs que tarda cada albanil
+	var horasQueTardaPorAmbiente
+	constructor (_horasQueTardaPorAmbiente)  { 
+		horasQueTardaPorAmbiente  = _horasQueTardaPorAmbiente
+	}
+	method costoTotal(casa){
+		return 50 * horasQueTardaPorAmbiente * casa.cantAmbientes()
+	}
+}
+
+class Electricista inherits Contratista {
+	constructor(precioBase) = super(precioBase)
+	override method costoTotal(casa){
+		if (casa.esComplicada()){
+				return self.precioBase() *2 * casa.cantAmbientes() 	
+				}
+			else { 
+				return super(casa)
 			}
+	
+		}
+	}
+class Plomero {//DUDA: lo mismo que con los alba�iles
+	var porcentajeRecargo
+	constructor(_porcentajeRecargo){
+		porcentajeRecargo = _porcentajeRecargo
+	}
+	method costoTotal(casa){
+		if (casa.cantidadPisos() > 2){
+				return 100 * porcentajeRecargo * casa.cantAmbientes() 	
+				}
+			else { 
+				return 100 * casa.cantAmbientes()
+			}
+		}
 }
 
-class Albanil {
-	
-	const precioPorHora = 50
-	var horasPorAmbiente
-	
-	constructor (_horasPorAmbiente){
-		horasPorAmbiente = _horasPorAmbiente
+class Agencia {
+	var empleados = []
+	method agregarEmpleado(empleado){
+		empleados.add(empleado)
 	}
-	
-	method costoTotal(metros, casa){ //TODO: ojo! No puede ser el de aldo
-		return fixture.aldo().cantAmbientes() * precioPorHora * horasPorAmbiente	
+	method agregarEmpleados(_empleados){
+		_empleados.forEach({unEmpleado =>self.agregarEmpleado(unEmpleado)})
 	}
-}	
-
-class Arquitecto{
-	var precioPorAmbiente
-	
-	constructor (_precioPorAmbiente){
-		precioPorAmbiente = _precioPorAmbiente
-	}
-	
-	method costoTotal(_,casa){
-		return precioPorAmbiente * casa.cantAmbientes() * casa.cantidadDePisos()
-	}
-}
-
-class Agencia{ //TODO: La responsabilidad de saber a quiénes puede contratar un cliente está acá.
-	var empleados
-	
-	constructor(_empleados){
-		empleados = _empleados
-	}
-	
-	method empleados(){
+	method empleadosContratados(){
 		return empleados
 	}
 
-	method anadirEmpleado(empleado){
-		empleados.add(empleado)
-	}
-	
-	method despedirEmpleado(empleado){
-		empleados.remove(empleado)
-	}
-	
-	method costoDeEmpleado(empleado, cliente){ //TODO: Debe volar. No es RESPONSABILIDAD de la agencia
-		return empleado.costoTotal(cliente.superficieAPintar(), cliente)
+	method empleadosQuePuedeContratar(persona){
+		return empleados.filter({unEmpleado => persona.puedeContratarA(unEmpleado)})
 	}
 }
 
-class Persona{
-	
+class Persona {
+	var casa
 	var ahorros
-	var precioDeServiciosContratados
-	var servicioMasCaro 
-	var costoMasAlto
-	var cantPisos
-	var habitaciones //TODO: Dentro de la casa!!!
-		
-	constructor (_ahorros, _precioDeServiciosContratados, _servicioMasCaro, _costoMasAlto, _cantPisos, _habitaciones){
+	var preciosDeServiciosContratados = []
+	var serviciosContratados = []
+	var porcentajeDispuestoAGastar = 0.2
+	
+	constructor(_ahorros){
 		ahorros = _ahorros
-		precioDeServiciosContratados = _precioDeServiciosContratados
-		servicioMasCaro = _servicioMasCaro
-		costoMasAlto = _costoMasAlto
-		cantPisos = _cantPisos
-		habitaciones = _habitaciones
-}
-	
-	method cantidadDePisos(){ //TODO: No guardar esto directamente en la persona
-		return cantPisos
-		}
-	
-	method tieneMasDeDosPisos(){ //TODO: No guardar esto directamente en la persona
-		return cantPisos > 2
 	}
-	
-	method esComplicada(){ //TODO: No guardar esto directamente en la persona
-		return habitaciones.size() > 3	
+	method cambioEnElPorcentajeDispuestoAGastar(porcentaje){
+		porcentajeDispuestoAGastar = porcentaje
 	}
-	
-	method cantAmbientes(){ //TODO: No guardar esto directamente en la persona
-		return habitaciones.size()
-	}
-	
 	method ahorrarMas(masAhorro){
 		ahorros += masAhorro
 	}
-	
-	method superficieAPintar(){  //TODO: No guardar esto directamente en la persona
-		return  habitaciones.sum()
-	}
-	
 	method presupuesto() {
-		return ahorros * 0.2
+		return ahorros * porcentajeDispuestoAGastar
 	}
-	
-	method puedeContratarA(contratista){
-		return self.presupuesto() > contratista.costoTotal(self.superficieAPintar(), self) //TODO: Volar primer parámetro. Pasar casa por parámetro. 
+	method puedeContratarA(persona){
+		return self.presupuesto() > persona.costoTotal(casa) 
 	}
-	
-	method lePuedeAbonarA(persona){
-		return self.presupuesto() > fixture.agencia().costoDeEmpleado(persona, self)
+	method superficieAPintar(){
+		return casa.superficieTotal()
 	}
-	
-	method disminuirAhorros(perdida){
-		ahorros -= perdida
+	method casa(_casa){
+		casa=_casa	
 	}
-	
-	method contratarA(persona) { //TODO: mirar los puntos q faltan hacer. ¿cambia la responsabilidad de contratar?
-	
-	var costo = fixture.agencia().costoDeEmpleado(persona, self) //TODO: 2 errores. 1: el q saben, que no hay q preguntarle esto a la agencia, porque el costo no es responsabilidad de la agencia. Además, desde el código del sistema NO SE PUEDE USAR EL FIXTURE.
-		if (self.lePuedeAbonarA(persona).negate()){
+	method reducirAhorros(monto){
+		ahorros -= monto
+	}
+	method contratarA(contratista){
+		if(self.presupuesto() < contratista.costoTotal(casa)){
 			throw new Exception("No se le puede abonar")
 		}
-		self.disminuirAhorros(costo)
-		precioDeServiciosContratados.add(costo)
-		self.servicioMasCaro(persona,costo)
-		return fixture.agencia().costoDeEmpleado(persona, casa)	
+		else {
+			self.reducirAhorros(contratista.costoTotal(casa))
+			preciosDeServiciosContratados.add(contratista.costoTotal(casa))
+			serviciosContratados.add(contratista)
+		}
 	}
 	
 	method fueUnDescuidado(){
 		return self.precioMasCaro() > 5000
 	}
-	
 	method precioMasCaro(){
-		return precioDeServiciosContratados.max()
+		return preciosDeServiciosContratados.max()
 	}
-	
-	method cantidadDeServicios(){
-		return precioDeServiciosContratados.size()
+	method cantidadDeServiciosContratados(){
+		return serviciosContratados.size()
 	}
-	
-	method servicioMasCaro(persona,costo){ //TODO: Volar este setter
-		if(costo > costoMasAlto){costoMasAlto = costo 
-			servicioMasCaro = persona
-		}
+	method leRealizaronUnTrabajo(){ //DUDA ac�
+		return serviciosContratados.asSet()
 	}
 
-	method elMasCaro(){ //TODO: Está mal guardarse esto. Si tienen una colección de costos, pueden calcular el más caro
-		return servicioMasCaro
-	}
 }
 
-class PersonaDescuidadaPisos inherits Persona {
-	
-	constructor (_ahorros, _precioDeServiciosContratados, _servicioMasCaro, _costoMasAlto, _cantPisos, _habitaciones) = super (_ahorros, _precioDeServiciosContratados, _servicioMasCaro, _costoMasAlto, _cantPisos, _habitaciones){
-	}
-	
+class Damian inherits Persona {
+	constructor(ahorros) = super(ahorros)
 	override method fueUnDescuidado(){
-		return cantPisos < 3 // TODO: No está completa la lógica
+		if(casa.cantidadPisos() > 3){return false}
+		else{return super()}
 	}
 }
 
-object casa { //TODO: Clase Casa
-	var cantHabitaciones = 6 //TODO: Colección de habitaciones
-	var cantPisos = 2
-	
-	method esComplicada(){
-		return cantHabitaciones > 3
+
+
+class Casa{
+	var cantAmbientes
+	var cantPisos
+	var habitaciones = []
+	constructor(_cantPisos){
+		cantPisos = _cantPisos
 	}
-	method tieneMasDeDosPisos(){
-		return cantPisos > 2
+	method agregarHabitacion(habitacion){
+		habitaciones.add(habitacion)
+		cantAmbientes = habitaciones.size()
 	}
-	method cantidadDePisos(){
+	method superficieTotal(){
+		return habitaciones.sum({unaHabitacion => unaHabitacion.superficie()})
+	}
+	method cantAmbientes(){
+		return cantAmbientes
+	}
+	method cantidadPisos(){
 		return cantPisos
 	}
-	method cantAmbientes() {
-		return cantHabitaciones
+	method esComplicada(){
+		return cantAmbientes > 3
 	}
-	method cambiarHabitaciones(cant){
-		cantHabitaciones =cant
-	}
-	method cambiarPisos(cant){
-		cantPisos =cant
-	}
-	method superficieAPintar(){ //TODO: Cambiar
-		return  cocina.superficie() + habitacion.superficie()
-	}
+	
 }
 
 object balde {
@@ -232,18 +209,20 @@ object raul {
 	method costoManoDeObra(metros){
 		return 25 * metros
 	}
-	method costoTotal(metros,casa) { 
-		return  self.costoManoDeObra(metros) + tipo.precioPintura(metros) 
+	method costoTotal(casa) { 
+		return  self.costoManoDeObra(casa.superficieTotal()) + tipo.precioPintura(casa.superficieTotal()) 
 	}
 }
 
 object carlos {
 		
-	method costoTotal(metros,casa){
-		return (500).max(500+(metros - 20)*30)
+	method costoTotal(casa){
+		return (500).max(500+(casa.superficieTotal() - 20)*30)
 	}
 		
 }
+
+
 
 object venancio {
 	
@@ -254,34 +233,38 @@ object venancio {
 	method costoManoDeObra(metros){
 		return 220 * (rounder.roundUp(metros / 10.0 ))
 	}
-	method costoTotal(metros, casa){
-		return  self.costoManoDeObra(metros)+ tipo.precioPintura(metros)
+	method costoTotal(casa){
+		return  self.costoManoDeObra(casa.superficieTotal())+ tipo.precioPintura(casa.superficieTotal())
 	}	
 }
 
-object cocina{ //TODO: clase Habitacion
-	var largo = 2
-	var ancho = 1
-	var alto = 3.5
+class Habitacion{ 
+	var largo 
+	var ancho 
+	var alto 
+	
+	constructor(_largo,_ancho,_alto){
+		largo = _largo
+		ancho = _ancho
+		alto = _alto
+	}
 	method superficie(){
-		return (ancho + largo)* 2 * alto
+		return ancho * largo * alto
 	}
 }
-
-object habitacion { //TODO: Nombre menos parecido arriba. cuartito
-	var metrosTotales = 20
-	method superficie(){
-		return metrosTotales
+class Cocina inherits Habitacion{
+	constructor(largo,ancho,alto) = super(largo,ancho,alto)
+	override method superficie(){
+		return (ancho + largo) * 2 * alto
 	}
 }
-
-object metrosCuadrados {
-	var metros = 0
-	method metrosCTest(m){
-		metros = m
+class CuartoDeAldo {
+	var superficie
+	constructor(_superficie){
+		superficie = _superficie
 	}
-	method metrosC(){
-		return metros
+	method superficie(){
+		return superficie
 	}
 }
 
