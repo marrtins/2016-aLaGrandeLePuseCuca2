@@ -1,9 +1,6 @@
 import tp.*
 object fixture{
-	method crearCasaDeAldo(){
-		
-		
-	}
+	
 	method casaDeAldo(casa,persona){
 		const cocina = new Cocina(2,1,3.5)
 		const cuartoDeAldo = new CuartoDeAldo(20)

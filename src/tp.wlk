@@ -1,69 +1,68 @@
 import fixture.*
 class Contratista {
-	var precioBase
-	constructor(_precioBase){
-		precioBase = _precioBase
+	var parametroBase
+	constructor(_parametroBase){
+		parametroBase = _parametroBase
 	}
-	method precioBase(){
-		return precioBase
+	method parametroBase(){
+		return parametroBase
 	}
-	method costoTotal(casa){
-		return self.precioBase() * casa.cantAmbientes()
-	}
+	method serviciosHechosEnElMesA(persona){
+		return (persona.trabajosContratados().filter({unTrabajo => (unTrabajo.servicio() == self) && new Date().month() == unTrabajo.fecha().month() }))
+	}	
 	method loTomoDePunto(persona){
-		return persona.cuantasVecesMeContrataste(self) > 1
+		return self.serviciosHechosEnElMesA(persona).size() >= 2
 	}
+	method cuantoMePagoEnElMes(persona){
+		return self.serviciosHechosEnElMesA(persona).sum({unServicio => unServicio.precio()})
+	}
+	
 }
 
 class Arquitecto inherits Contratista {
 	constructor(precioBase) = super(precioBase)
-	override method costoTotal(casa){
-		return self.precioBase() * casa.cantidadPisos() * casa.cantAmbientes()
+	method costoTotal(casa){
+		return self.parametroBase() * casa.cantidadPisos() * casa.cantAmbientes()
 	}
 }
 
 class MaestroMayorDeObra inherits Contratista {
 	constructor(precioBase) = super(precioBase)
-	override method costoTotal(casa){
+	 method costoTotal(casa){
 		if (casa.esComplicada()){
-				return self.precioBase() * casa.cantAmbientes() * 1.2
+				return self.parametroBase() * casa.cantAmbientes() * 1.2
 			}
 			else { 
-				 return super(casa)
+				 return self.parametroBase() * casa.cantAmbientes()
 			}
 		}
 }
 
-class Albanil { //DUDA: esta bien que no herede de contratista? pq este no necesita de un precio base ya q para todos es lo mismo, lo q necesita es la cant d hrs que tarda cada albanil
-	var horasQueTardaPorAmbiente
-	constructor (_horasQueTardaPorAmbiente)  { 
-		horasQueTardaPorAmbiente  = _horasQueTardaPorAmbiente
-	}
+class Albanil inherits Contratista {
+	constructor (horas) = super(horas)   
 	method costoTotal(casa){
-		return 50 * horasQueTardaPorAmbiente * casa.cantAmbientes()
+		return 50 * self.parametroBase() * casa.cantAmbientes()
 	}
 }
 
 class Electricista inherits Contratista {
 	constructor(precioBase) = super(precioBase)
-	override method costoTotal(casa){
+	method costoTotal(casa){
 		if (casa.esComplicada()){
-				return self.precioBase() *2 * casa.cantAmbientes() 	
+				return self.parametroBase() *2 * casa.cantAmbientes() 	
 				}
 			else { 
-				return super(casa)
+				return self.parametroBase() * casa.cantAmbientes()
 			}
 	
 		}
 	}
-class Plomero {//DUDA: lo mismo que con los albañiles
-	var porcentajeRecargo
-	constructor(_porcentajeRecargo){
-		porcentajeRecargo = _porcentajeRecargo
-	}
+class Plomero inherits Contratista {
+	constructor(porcentajeRecargo) = super(porcentajeRecargo)
+	
 	method costoTotal(casa){
 		if (casa.cantidadPisos() > 2){
-				return 100 * porcentajeRecargo * casa.cantAmbientes() 	
+				return 100 * self.parametroBase() * casa.cantAmbientes() 	
 				}
 			else { 
 				return 100 * casa.cantAmbientes()
@@ -93,6 +92,7 @@ class Persona {
 	var ahorros
 	var preciosDeServiciosContratados = []
 	var serviciosContratados = []
+	var trabajosContratados = []
 	var porcentajeDispuestoAGastar = 0.2
 	
 	constructor(_ahorros){
@@ -126,10 +126,12 @@ class Persona {
 		else {
 			self.reducirAhorros(contratista.costoTotal(casa))
 			preciosDeServiciosContratados.add(contratista.costoTotal(casa))
+			const trabajo = new TrabajoRealizado(contratista,contratista.costoTotal(casa))
 			serviciosContratados.add(contratista)
+			trabajosContratados.add(trabajo)
+			
 		}
 	}
-	
 	method fueUnDescuidado(){
 		return self.precioMasCaro() > 5000
 	}
@@ -139,10 +141,40 @@ class Persona {
 	method cantidadDeServiciosContratados(){
 		return serviciosContratados.size()
 	}
-	method leRealizaronUnTrabajo(){ //DUDA acá
+	method leRealizaronUnTrabajo(){ 
 		return serviciosContratados.asSet()
 	}
-
+	method nombreDelServicioMasCaro(){
+		return self.nombreSimpleDelServicio(self.servicioMasCaro())
+	}
+	method servicioMasCaro(){
+		return trabajosContratados.max({unServicio => unServicio.precio()})
+	}
+	method nombreSimpleDelServicio(unServicio){
+		return unServicio.servicio()
+	}
+	method trabajosContratados(){
+		return trabajosContratados
+	}
+}
+class TrabajoRealizado {
+	var servicio
+	var precio
+	var fechaDelServicio = new Date()
+	constructor(_servicio,_precio){
+		servicio = _servicio
+		precio = _precio
+	}
+	method servicio(){
+		return servicio
+	}
+	method precio(){
+		return precio
+	}
+	method fecha(){
+		return fechaDelServicio
+	}
+	
 }
 
 class Damian inherits Persona {

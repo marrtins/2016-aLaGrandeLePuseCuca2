@@ -255,6 +255,15 @@ test "aldo ahorra 1millon, contrata amarcos saber si fue un descuidado"{
 	aldo.ahorrarMas(1000000)
 	aldo.contratarA(marcos)
 	assert.that(aldo.fueUnDescuidado())
+}
+test "aldo contrata a roger y a carlos, el mas caro fue el de carlos"{
+	const aldo = new Persona(6000)
+	const casaDeAldo = new Casa(2)
+	const roger = new Plomero(1.1)
+	fixture.casaDeAldo(casaDeAldo,aldo)
+	aldo.contratarA(roger)
+	aldo.contratarA(carlos)
+	assert.equals(carlos, aldo.nombreDelServicioMasCaro())
 	
 }
 
@@ -345,7 +354,8 @@ test "milena ahorra 1,5Mcontrata 2 veces a eliana 1 a silvana, debe indicar el c
 	milena.contratarA(eliana)
 	milena.contratarA(eliana)
 	milena.contratarA(silvina)
-	assert.equals(#{eliana,silvina},milena.leRealizaronUnTrabajo()) // dudas acá
+	milena.contratarA(silvina)
+	assert.equals(#{eliana,silvina},milena.leRealizaronUnTrabajo()) 
 }
 
 test"damian contrata a dodain y luego a silvina. dodain lo tomo de punto? -> false"{
@@ -356,4 +366,27 @@ test"damian contrata a dodain y luego a silvina. dodain lo tomo de punto? -> fal
 	fixture.casaDeDamian(casaDeDamian,damian)
 	damian.contratarA(silvina)
 	damian.contratarA(dodain)
+	assert.notThat(dodain.loTomoDePunto(damian))
+}
+test"damian contrata a dodain y luego a silvina y luego dodain. dodain lo tomo de punto? -> true"{
+	const damian = new Damian(250000)
+	const casaDeDamian = new Casa(4)
+	const silvina = new Plomero(1.25)
+	const dodain = new Albanil(24)
+	fixture.casaDeDamian(casaDeDamian,damian)
+	damian.contratarA(dodain)
+	damian.contratarA(silvina)
+	damian.contratarA(dodain)
+	assert.that(dodain.loTomoDePunto(damian))
+}
+test"damian contrata a dodain y luego a silvina y luego dodain. cuanto le pago a dodain en el ems es 9600"{
+	const damian = new Damian(250000)
+	const casaDeDamian = new Casa(4)
+	const silvina = new Plomero(1.25)
+	const dodain = new Albanil(24)
+	fixture.casaDeDamian(casaDeDamian,damian)
+	damian.contratarA(dodain)
+	damian.contratarA(silvina)
+	damian.contratarA(dodain)
+	assert.equals(9600,dodain.cuantoMePagoEnElMes(damian))
 }
