@@ -1,6 +1,12 @@
 import fixture.*
 class Contratista {
 	var parametroBase
+	var fechaDeInicio
+	var trabajosRealizados = []
+	var complejidadDelRol = 2
+	var experienciaPrevia = 0
+	var ajuste = sinAjuste
+	var calidad
 	constructor(_parametroBase){
 		parametroBase = _parametroBase
 	}
@@ -17,18 +23,139 @@ class Contratista {
 		return self.serviciosHechosEnElMesA(persona).sum({unServicio => unServicio.precio()})
 	}
 	
-}
-
-class Arquitecto inherits Contratista {
-	constructor(precioBase) = super(precioBase)
+	
+	//p4
+	method setearFechaInicio(dia,mes,ano){
+		if(new Date() < new Date(dia,mes,ano)){
+			throw new Exception("No se puede asignar una fecha posterior al dia de hoy")
+		}
+		else{
+		fechaDeInicio = new Date(dia,mes,ano)
+		}
+	}
+	method fechaDeInicio(){
+		return fechaDeInicio
+	}
+	method antiguedad(){
+		return  new Date().year() - fechaDeInicio.year()
+		}
+	method porcentajePorAntiguedad(){
+		if(self.antiguedad() >0){
+			return rounder.roundDown(self.antiguedad() / 2.00) * 5
+		}
+	else return 0
+	}
+	method agregarTrabajo(trabajo){
+		trabajosRealizados.add(trabajo)
+	}
+	method trabajosRealizados(){
+		return trabajosRealizados
+	}
+	
+	method complejidadDeCasasEnLasQueTrabajo(){
+		return (trabajosRealizados.map({unTrabajo => unTrabajo.complejidadDeLaCasa()}))
+	}
+	method experienciaGanada(){
+		return experienciaPrevia + (self.complejidadDeCasasEnLasQueTrabajo().map({complejidad => complejidad * self.complejidadDelRol()})).sum()
+	}
+	method complejidadDelRol(){
+		return complejidadDelRol
+	}
+	method calidadDelContratista(){
+		if(self.experienciaGanada() <500){
+			return aprendiz	
+		}
+		if(501 <= self.experienciaGanada() < 1000){
+			return experimentado
+		}
+		if(1001>= self.experienciaGanada() && self.antiguedad() > 20){
+			return referente
+		}
+		else{
+			return maestro
+		}
+	}
+	method setearExperiencia(exp){
+		experienciaPrevia += exp
+	}
 	method costoTotal(casa){
-		return self.parametroBase() * casa.cantidadPisos() * casa.cantAmbientes()
+		return 1
+	}
+	method pagame(casa){
+		return self.calidadDelContratista().porcentajeDeSuma() *0.1* self.costoTotal(casa) + self.costoTotal(casa) * 0.1*self.porcentajePorAntiguedad()
+	}
+	method cobrar(){
+		return ajuste.coeficienteDeAjuste() * 0.1 
+	}
+}
+object aprendiz{
+	var porcentajeDeSuma = 0
+	method porcentajeDeSuma(){
+		return porcentajeDeSuma
+	}
+}
+object experimentado{
+	var porcentajeDeSuma = 20
+	method porcentajeDeSuma(){
+		return porcentajeDeSuma
+	}
+}
+object referente{
+	var porcentajeDeSuma = 30
+	method porcentajeDeSuma(){
+		return porcentajeDeSuma
+	}
+}
+object maestro {
+	var porcentajeDeSuma = 30
+	method porcentajeDeSuma(){
+		return porcentajeDeSuma
+	}
+}
+	
+object conAjuste{
+	method coeficienteDeAjuste(meses){
+		if (meses == 0){
+			return 0
+		}
+		if (meses == 1){
+			return 12.4
+		}
+		if (meses == 2 ){
+			return 19.9
+		}
+		if (meses == 3 ){
+			return 24.4
+		}
+		else return 43
+	}
+}
+	
+object sinAjuste{
+	method CoeficienteDeAjuste(meses){
+		return 0
 	}
 }
 
+class Arquitecto inherits Contratista {
+	
+	constructor(precioBase) = super(precioBase){
+	 	complejidadDelRol = 5
+	}
+	override method costoTotal(casa){
+		return self.parametroBase() * casa.cantidadPisos() * casa.cantAmbientes()
+	}
+	override method porcentajePorAntiguedad(){
+		return self.antiguedad()
+	}
+	
+}
+
 class MaestroMayorDeObra inherits Contratista {
-	constructor(precioBase) = super(precioBase)
-	 method costoTotal(casa){
+	constructor(precioBase) = super(precioBase){
+		complejidadDelRol = 3
+	}
+	 override method costoTotal(casa){
 		if (casa.esComplicada()){
 				return self.parametroBase() * casa.cantAmbientes() * 1.2
 			}
@@ -36,18 +163,31 @@ class MaestroMayorDeObra inherits Contratista {
 				 return self.parametroBase() * casa.cantAmbientes()
 			}
 		}
+	override method porcentajePorAntiguedad(){
+		if(self.antiguedad() < 5){
+			return 0
+		}
+		if(  self.antiguedad() < 10){
+			return 10
+		}
+		else {
+			return 20
+		}
+	}
 }
 
 class Albanil inherits Contratista {
-	constructor (horas) = super(horas)   
-	method costoTotal(casa){
+	constructor (horas) = super(horas)  {
+		complejidadDelRol = 1
+	}
+	override method costoTotal(casa){
 		return 50 * self.parametroBase() * casa.cantAmbientes()
 	}
 }
 
 class Electricista inherits Contratista {
 	constructor(precioBase) = super(precioBase)
-	method costoTotal(casa){
+	override method costoTotal(casa){
 		if (casa.esComplicada()){
 				return self.parametroBase() *2 * casa.cantAmbientes() 	
 				}
@@ -60,7 +200,7 @@ class Electricista inherits Contratista {
 class Plomero inherits Contratista {
 	constructor(porcentajeRecargo) = super(porcentajeRecargo)
 	
-	method costoTotal(casa){
+	override method costoTotal(casa){
 		if (casa.cantidadPisos() > 2){
 				return 100 * self.parametroBase() * casa.cantAmbientes() 	
 				}
@@ -126,9 +266,10 @@ class Persona {
 		else {
 			self.reducirAhorros(contratista.costoTotal(casa))
 			preciosDeServiciosContratados.add(contratista.costoTotal(casa))
-			const trabajo = new TrabajoRealizado(contratista,contratista.costoTotal(casa))
+			const trabajo = new TrabajoRealizado(contratista,contratista.costoTotal(casa),casa,new Date(),casa.complejidad())
 			serviciosContratados.add(contratista)
 			trabajosContratados.add(trabajo)
+			contratista.agregarTrabajo(trabajo)
 			
 		}
 	}
@@ -160,10 +301,15 @@ class Persona {
 class TrabajoRealizado {
 	var servicio
 	var precio
-	var fechaDelServicio = new Date()
-	constructor(_servicio,_precio){
+	var casa
+	var complejidadDeLaCasa
+	var fecha
+	constructor(_servicio,_precio,_casa,_fecha,_complejidadDeLaCasa){
 		servicio = _servicio
 		precio = _precio
+		casa = _casa
+		fecha = _fecha
+		complejidadDeLaCasa = _complejidadDeLaCasa
 	}
 	method servicio(){
 		return servicio
@@ -172,8 +318,18 @@ class TrabajoRealizado {
 		return precio
 	}
 	method fecha(){
-		return fechaDelServicio
+		return fecha
 	}
+	method casa(){
+		return casa
+	}
+	method complejidadDeLaCasa(){
+		return complejidadDeLaCasa
+	}
+	method mesesAlDiaDeHoy(){
+		return new Date().month() - fecha.month()
+	}
+	
 	
 }
 
@@ -211,6 +367,19 @@ class Casa{
 		return cantAmbientes > 3
 	}
 	
+	
+	method complejidad(){
+		if (cantPisos >2 && self.esComplicada()){
+			return 5
+		}
+		if(cantPisos > 2){
+			return 3
+		}
+		else {
+			return 1
+		}
+	}
+	
 }
 
 object balde {
@@ -236,36 +405,36 @@ object granel {
 	}
 }
 
-object raul {
+object raul inherits Contratista(25) {
 	var tipo = balde
 	method costoManoDeObra(metros){
-		return 25 * metros
+		return parametroBase * metros
 	}
-	method costoTotal(casa) { 
+	override method costoTotal(casa) { 
 		return  self.costoManoDeObra(casa.superficieTotal()) + tipo.precioPintura(casa.superficieTotal()) 
 	}
 }
 
-object carlos {
+object carlos inherits Contratista(500){
 		
-	method costoTotal(casa){
-		return (500).max(500+(casa.superficieTotal() - 20)*30)
+	override method costoTotal(casa){
+		return (parametroBase).max(parametroBase+(casa.superficieTotal() - 20)*30)
 	}
 		
 }
 
 
 
-object venancio {
+object venancio inherits Contratista(220){
 	
 	var tipo = balde
 	method cambioDeTipo(_tipo){
 		tipo=_tipo
 	}
 	method costoManoDeObra(metros){
-		return 220 * (rounder.roundUp(metros / 10.0 ))
+		return parametroBase * (rounder.roundUp(metros / 10.0 ))
 	}
-	method costoTotal(casa){
+	override method costoTotal(casa){
 		return  self.costoManoDeObra(casa.superficieTotal())+ tipo.precioPintura(casa.superficieTotal())
 	}	
 }
@@ -304,7 +473,9 @@ object rounder {
 	method roundUp(nro){
 		return -(nro.div(-1)) 
 	}
+	method roundDown(nro){
+		return (nro.div(1)) 
+	}
 }
-
 
 
