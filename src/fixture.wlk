@@ -36,6 +36,13 @@ object fixture{
 		casa.agregarHabitacion(cuarto5)
 		persona.casa(casa)
 	}
+	method casaComplicadaDe2Ambientes(casa,persona){
+		const cuarto2 = new CuartoDeAldo(20)
+		const cuarto3 = new CuartoDeAldo(20)
+		casa.agregarHabitacion(cuarto2)
+		casa.agregarHabitacion(cuarto3)
+		persona.casa(casa)
+	}
 	method casaDe4pisosY7Ambientes(casa,persona){
 		const cuarto2 = new CuartoDeAldo(20)
 		const cuarto3 = new CuartoDeAldo(20)
@@ -162,12 +169,14 @@ object fixture{
 	method damian(){
 		return new Persona(250000)
 	}
+	
 	method servicioDeDodainEl1532016deMilPesos(){
 		const dodain = self.dodain()
 		const casa = new Casa(1)
 		const fecha = new Date(15,03,2016)
 		return new TrabajoRealizado(dodain,1000,casa,fecha,casa.complejidad())
 	}
+	
 	method servicioDeDodainEl442016deMilPesos(){
 		const dodain = self.dodain()
 		const casa = new Casa(1)

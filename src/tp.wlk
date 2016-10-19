@@ -6,7 +6,7 @@ class Contratista {
 	var complejidadDelRol = 2
 	var experienciaPrevia = 0
 	var ajuste = sinAjuste
-	var calidad
+	
 	constructor(_parametroBase){
 		parametroBase = _parametroBase
 	}
@@ -88,6 +88,7 @@ class Contratista {
 		return ajuste.coeficienteDeAjuste() * 0.1 
 	}
 }
+
 object aprendiz{
 	var porcentajeDeSuma = 0
 	method porcentajeDeSuma(){
@@ -143,7 +144,7 @@ class Arquitecto inherits Contratista {
 	 	complejidadDelRol = 5
 	}
 	override method costoTotal(casa){
-		return self.parametroBase() * casa.cantidadPisos() * casa.cantAmbientes()
+		return self.parametroBase() * casa.cantidadPisos() * casa.cantAmbientes() * (1 + self.porcentajePorAntiguedad()/100)
 	}
 	override method porcentajePorAntiguedad(){
 		return self.antiguedad()
@@ -157,10 +158,10 @@ class MaestroMayorDeObra inherits Contratista {
 	}
 	 override method costoTotal(casa){
 		if (casa.esComplicada()){
-				return self.parametroBase() * casa.cantAmbientes() * 1.2
+				return self.parametroBase() * casa.cantAmbientes() * 1.2 * (1 + self.porcentajePorAntiguedad()/100)
 			}
 			else { 
-				 return self.parametroBase() * casa.cantAmbientes()
+				 return self.parametroBase() * casa.cantAmbientes() * (1 + self.porcentajePorAntiguedad()/100)
 			}
 		}
 	override method porcentajePorAntiguedad(){
