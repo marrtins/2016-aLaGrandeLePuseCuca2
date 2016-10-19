@@ -10,6 +10,7 @@ object fixture{
 		persona.casa(casa)
 		return casa
 	}
+	
 	method casaComplicada(casa,persona){
 		const cocina = new Cocina(2,1,3.5)
 		const cuartoDeAldo = new CuartoDeAldo(20)
@@ -25,6 +26,7 @@ object fixture{
 		casa.agregarHabitacion(cuarto5)
 		persona.casa(casa)
 	}
+	
 	method casaComplicadaDe4Ambientes(casa,persona){
 		const cuarto2 = new CuartoDeAldo(20)
 		const cuarto3 = new CuartoDeAldo(20)
@@ -36,6 +38,7 @@ object fixture{
 		casa.agregarHabitacion(cuarto5)
 		persona.casa(casa)
 	}
+	
 	method casaComplicadaDe2Ambientes(casa,persona){
 		const cuarto2 = new CuartoDeAldo(20)
 		const cuarto3 = new CuartoDeAldo(20)
@@ -43,6 +46,7 @@ object fixture{
 		casa.agregarHabitacion(cuarto3)
 		persona.casa(casa)
 	}
+	
 	method casaDe4pisosY7Ambientes(casa,persona){
 		const cuarto2 = new CuartoDeAldo(20)
 		const cuarto3 = new CuartoDeAldo(20)
@@ -60,6 +64,7 @@ object fixture{
 		casa.agregarHabitacion(cuarto8)
 		persona.casa(casa)
 	}
+	
 	method casaDePrueba(metros){
 		const cuarto = new CuartoDeAldo(metros)
 		const casa = new Casa(2)
@@ -77,6 +82,7 @@ object fixture{
 		return casa 
 		
 	}
+	
 	method casaDeDamian(persona){
 		const casa = new Casa(4)
 		const hab1 = new Habitacion(4,3,3) 
@@ -90,6 +96,7 @@ object fixture{
 		persona.casa(casa)
 		return casa
 	}
+	
 	method crearAgenciaNueva(){
 		const noelia = new Electricista(250)
 		const eliana = new MaestroMayorDeObra(12000)
@@ -102,70 +109,85 @@ object fixture{
 		agencia.agregarEmpleado(silvina)
 		return agencia
 	}
+	
 	method venancio(){
 		venancio.setearFechaInicio(18,07,2000)
 		return venancio
 	}
+	
 	method eliana(){
 		const contratista = new MaestroMayorDeObra(12000)
 		contratista.setearFechaInicio(08,12,2007)
 		return contratista
 	}
+	
 	method marcos(){
 		const contratista = new MaestroMayorDeObra(50000)
 		contratista.setearFechaInicio(18,07,2010)
 		return contratista
 	}
+	
 	method emanuel(){
 		const contratista = new Arquitecto(100000)
 		contratista.setearFechaInicio(05,06,2009)
 		return contratista
 	}
+	
 	method carlos(){
 		carlos.setearFechaInicio(07,07,2016)
 		return carlos
 	}
+	
 	method raul(){
 		raul.setearFechaInicio(01,01,2016)
 		return raul
 	}
+	
 	method lito(){
 		const contratista = new Albanil(16)
 		contratista.setearFechaInicio(01,01,2016)
 		return contratista
 	}
+	
 	method eduardo(){
 		const contratista = new Electricista(100)
 		contratista.setearFechaInicio(01,01,2016)
 		return contratista
 	}
+	
 	method roger(){
 		const contratista = new Plomero(1.1)
 		contratista.setearFechaInicio(01,01,2016)
 		return contratista
 	}
+	
 	method noelia(){
 		const contratista = new Electricista(250)
 		contratista.setearFechaInicio(01,01,2016)
 		return contratista
 	}
+	
 	method dodain(){
 		const contratista = new Albanil(24)
 		contratista.setearFechaInicio(01,01,2016)
 		return contratista
 	}
+	
 	method silvina(){
 		const contratista = new Plomero(1.25)
 		contratista.setearFechaInicio(01,01,2016)
 		contratista.setearExperiencia(396)
 		return contratista
 	}
+	
 	method aldo(){
 		return new Persona(6000)
 	}
+	
 	method milena(){
 		return new Persona(2000)
 	}
+	
 	method damian(){
 		return new Persona(250000)
 	}
@@ -183,6 +205,4 @@ object fixture{
 		const fecha = new Date(04,04,2016)
 		return new TrabajoRealizado(dodain,1000,casa,fecha,casa.complejidad())	
 	}
-	
-	
 }

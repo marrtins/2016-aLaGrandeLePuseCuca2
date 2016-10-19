@@ -95,18 +95,21 @@ object aprendiz{
 		return porcentajeDeSuma
 	}
 }
+
 object experimentado{
 	var porcentajeDeSuma = 20
 	method porcentajeDeSuma(){
 		return porcentajeDeSuma
 	}
 }
+
 object referente{
 	var porcentajeDeSuma = 30
 	method porcentajeDeSuma(){
 		return porcentajeDeSuma
 	}
 }
+
 object maestro {
 	var porcentajeDeSuma = 30
 	method porcentajeDeSuma(){

@@ -359,62 +359,76 @@ test "antiguedad de venancio debe ser 16"{
 	const venancio = fixture.venancio()
 	assert.equals(16,venancio.antiguedad())
 }
+
 test "antigudad de eliana debe ser 9"{
 	const eliana = fixture.eliana()
 	assert.equals(9,eliana.antiguedad())
 }
+
 test "intentar asignar antiguedad 22-10-18 a venancio debe dar error"{
 	const venancio = fixture.venancio()
 	assert.throwsExceptionWithMessage("No se puede asignar una fecha posterior al dia de hoy",{venancio.setearFechaInicio(22,10,2018)})
 }
+
 test "saber adicional de marcos como maestro mayor de obra debe ser 10"{
 	const marcos = fixture.marcos()
 	assert.equals(10,marcos.porcentajePorAntiguedad())
 }
+
 test "asignar la fecha 16-4-16 a marcos como fecha de inicio. no debe cobrar adicional"{
 	const marcos = new MaestroMayorDeObra(50000)
 	marcos.setearFechaInicio(16,4,2016)
 	assert.equals(0,marcos.porcentajePorAntiguedad())
 }
+
 test "asignar la fecha 16-4-2001 a marcos como fecha de inicio.debe ser 20"{
 	const marcos = new MaestroMayorDeObra(50000)
 	marcos.setearFechaInicio(16,4,2001)
 	assert.equals(20,marcos.porcentajePorAntiguedad())
 }
+
 test "el adicional de emanuel es 7"{
 	const emanuel = fixture.emanuel()
 	assert.equals(7,emanuel.porcentajePorAntiguedad())
 }
+
 test "el adicional de venancio es 40"{
 	fixture.venancio()
 	assert.equals(40,venancio.porcentajePorAntiguedad())
 }
+
 test "adicional de carlos es cero"{
 	fixture.carlos()
 	assert.equals(0,carlos.porcentajePorAntiguedad())
 }
+
 test "complejidad casa de aldo es 1"{
 	const aldo = fixture.aldo()
 	const casaDeAldo = fixture.casaDeAldo(aldo)
 	assert.equals(1,casaDeAldo.complejidad())
 }
+
 test "complejidad casa de milena es 3"{
 	const milena = fixture.milena()
 	const casaDeMilena = fixture.casaDeMilena(milena)
 	assert.equals(3,casaDeMilena.complejidad())
 }
+
 test "complejidad casa de damian es 5"{
 	const damian = fixture.damian()
 	const casaDeDamian = fixture.casaDeDamian(damian)
 	assert.equals(5,casaDeDamian.complejidad())
 }
+
 test "complejidad del rol de emanuel es 5"{
 	const emanuel = fixture.emanuel()
 	assert.equals(5,emanuel.complejidadDelRol())
 }
+
 test "complejidad del rol de venancio es 2"{
 	assert.equals(2,venancio.complejidadDelRol())
 }
+
 test "dodain no tiene experiencia, damian lo contrata q experiencia tiene ahora es 5"{
 	const dodain = fixture.dodain()
 	const damian = fixture.damian()
@@ -422,6 +436,7 @@ test "dodain no tiene experiencia, damian lo contrata q experiencia tiene ahora 
 	damian.contratarA(dodain)
 	assert.equals(5,dodain.experienciaGanada())	
 }
+
 test "milena contrata a silvina cual es la exp adquirida de silvina"{
 	const silvina = fixture.silvina()
 	const milena = fixture.milena()
@@ -429,14 +444,17 @@ test "milena contrata a silvina cual es la exp adquirida de silvina"{
 	milena.contratarA(silvina)
 	assert.equals(402,silvina.experienciaGanada())
 }
+
 test "el ajuste por inflacion de un sv de dodain del 15-3-16 de 1000 es 24,4"{
 	const sv = fixture.servicioDeDodainEl1532016deMilPesos()
 	assert.equals(43,conAjuste.coeficienteDeAjuste(sv.mesesAlDiaDeHoy()))
 }
+
 test "el ajuste por inflacion de un sv de dodain del 4-4-16 de 1000 es 43"{
 	const sv = fixture.servicioDeDodainEl442016deMilPesos()
 	assert.equals(43,conAjuste.coeficienteDeAjuste(sv.mesesAlDiaDeHoy()))
 }
+
 test "el ajuste esta activado, damian contrata a dodain el valor es 6864"{
 	const damian = fixture.damian()
 	const dodain = fixture.dodain()
