@@ -13,8 +13,8 @@ class Contratista {
 	method parametroBase(){
 		return parametroBase
 	}
-	method serviciosHechosEnElMesA(persona){
-		return (persona.trabajosContratados().filter({unTrabajo => (unTrabajo.servicio() == self) && new Date().month() == unTrabajo.fecha().month() }))
+	method serviciosHechosEnElMesA(persona){ //TODO: rompe encapsulamiento
+		return (persona.trabajosContratados().filter({unTrabajo => (unTrabajo.servicio() == self) && new Date().month() == unTrabajo.fecha().month() /*rompo encapsulamiento. Delegar.*/ */ }))
 	}	
 	method loTomoDePunto(persona){
 		return self.serviciosHechosEnElMesA(persona).size() >= 2
@@ -28,6 +28,7 @@ class Contratista {
 	method setearFechaInicio(dia,mes,ano){
 		if(new Date() < new Date(dia,mes,ano)){
 			throw new Exception("No se puede asignar una fecha posterior al dia de hoy")
+			//TODO: No tirar Exception
 		}
 		else{
 		fechaDeInicio = new Date(dia,mes,ano)
@@ -52,17 +53,20 @@ class Contratista {
 		return trabajosRealizados
 	}
 	
-	method complejidadDeCasasEnLasQueTrabajo(){
-		return (trabajosRealizados.map({unTrabajo => unTrabajo.complejidadDeLaCasa()}))
+	method complejidadAcumulada(){
+		return (trabajosRealizados.map({unTrabajo => unTrabajo.complejidadDeLaCasa() * self.complejidadDelRol()}))
 	}
 	method experienciaGanada(){
-		return experienciaPrevia + (self.complejidadDeCasasEnLasQueTrabajo().map({complejidad => complejidad * self.complejidadDelRol()})).sum()
+		return experienciaPrevia + self.complejidadAcumulada().sum()
 	}
 	method complejidadDelRol(){
 		return complejidadDelRol
 	}
 	method calidadDelContratista(){
-		if(self.experienciaGanada() <500){
+		//TODO: coleccion y find
+		
+		
+		if(aprendiz.aplica(self)){ //TODO.
 			return aprendiz	
 		}
 		if(501 <= self.experienciaGanada() < 1000){
@@ -92,25 +96,24 @@ class Contratista {
 object aprendiz{
 	var porcentajeDeSuma = 0
 	method porcentajeDeSuma(){
-		return porcentajeDeSuma
+		return 0
 	}
 }
 
 object experimentado{
 	var porcentajeDeSuma = 20
 	method porcentajeDeSuma(){
-		return porcentajeDeSuma
+		return 20
 	}
 }
 
-object referente{
-	var porcentajeDeSuma = 30
-	method porcentajeDeSuma(){
-		return porcentajeDeSuma
-	}
+object referente inherits Maestro{
 }
 
-object maestro {
+object maestro inherits Maestro{
+}
+
+class Maestro {
 	var porcentajeDeSuma = 30
 	method porcentajeDeSuma(){
 		return porcentajeDeSuma
@@ -265,11 +268,11 @@ class Persona {
 	}
 	method contratarA(contratista){
 		if(self.presupuesto() < contratista.costoTotal(casa)){
-			throw new Exception("No se le puede abonar")
+			throw new Exception("No se le puede abonar") //TODO
 		}
 		else {
 			self.reducirAhorros(contratista.costoTotal(casa))
-			preciosDeServiciosContratados.add(contratista.costoTotal(casa))
+			preciosDeServiciosContratados.add(contratista.costoTotal(casa)) //TODO: volar
 			const trabajo = new TrabajoRealizado(contratista,contratista.costoTotal(casa),casa,new Date(),casa.complejidad())
 			serviciosContratados.add(contratista)
 			trabajosContratados.add(trabajo)
@@ -372,7 +375,7 @@ class Casa{
 	}
 	
 	
-	method complejidad(){
+	method complejidad(){ // TODO: no hacer calculos mentales
 		if (cantPisos >2 && self.esComplicada()){
 			return 5
 		}

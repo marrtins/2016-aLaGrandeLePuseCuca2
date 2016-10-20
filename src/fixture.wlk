@@ -11,6 +11,7 @@ object fixture{
 		return casa
 	}
 	
+	
 	method casaComplicada(casa,persona){
 		const cocina = new Cocina(2,1,3.5)
 		const cuartoDeAldo = new CuartoDeAldo(20)

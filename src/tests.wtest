@@ -465,3 +465,4 @@ test "el ajuste esta activado, damian contrata a dodain el valor es 6864"{
 	assert.equals(6864,costoConAjuste)
 }
 
+
