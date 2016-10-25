@@ -1,4 +1,5 @@
 import tp.*
+import contratistas.*
 import fixture.*
 
 test "PINTURA: Latas necesarias para 251m2 deben ser 6" {
@@ -133,8 +134,8 @@ test "cuanto cobra marcos por la casa de aldo debe ser 110k"{
 test "cuanto cobra marcos por una casa compli debe ser 132k"{
 	const marcos = fixture.marcos()
 	const alguien = new Persona(6000)
-	const casaComplicada = new Casa(4)
-	fixture.casaComplicadaDe2Ambientes(casaComplicada,alguien)
+	const casaComplicada = new Casa(2)
+	fixture.casaComplicadaDe4Ambientes(casaComplicada,alguien)
 	assert.equals(132000,marcos.costoTotal(casaComplicada))
 }
 
@@ -209,11 +210,11 @@ test "aldo contrata a roger y a carlos, cuantos servicios tuvo"{
 	aldo.contratarA(carlos)
 	assert.equals(2,aldo.cantidadDeServiciosContratados())
 }
-test "aldo intenta c ontratar a marcos no puede pq no le da el presupuesto"{
+test "aldo intenta contratar a marcos no puede pq no le da el presupuesto"{
 	const aldo = fixture.aldo()
 	const marcos = fixture.marcos()
 	fixture.casaDeAldo(aldo)
-	assert.throwsExceptionWithMessage("No se le puede abonar",{aldo.contratarA(marcos)})
+	assert.throwsExceptionLike(new NoSePuedeAbonarError("No se le puede abonar"),{aldo.contratarA(marcos)})
 }
 test "aldo contrata a roger y a carlos. saber si fue un descuidado"{
 	const aldo = fixture.aldo()
@@ -365,9 +366,10 @@ test "antigudad de eliana debe ser 9"{
 	assert.equals(9,eliana.antiguedad())
 }
 
+
 test "intentar asignar antiguedad 22-10-18 a venancio debe dar error"{
 	const venancio = fixture.venancio()
-	assert.throwsExceptionWithMessage("No se puede asignar una fecha posterior al dia de hoy",{venancio.setearFechaInicio(22,10,2018)})
+	assert.throwsExceptionLike(new FechaPosteriorError("No se puede asignar una fecha posterior al dia de hoy"), {venancio.setearFechaInicio(22,10,2018)})
 }
 
 test "saber adicional de marcos como maestro mayor de obra debe ser 10"{
@@ -447,12 +449,14 @@ test "milena contrata a silvina cual es la exp adquirida de silvina"{
 
 test "el ajuste por inflacion de un sv de dodain del 15-3-16 de 1000 es 24,4"{
 	const sv = fixture.servicioDeDodainEl1532016deMilPesos()
-	assert.equals(43,conAjuste.coeficienteDeAjuste(sv.mesesAlDiaDeHoy()))
+	sv.estado(true)
+	assert.equals(43,sv.ajustePorInflacion())
 }
 
 test "el ajuste por inflacion de un sv de dodain del 4-4-16 de 1000 es 43"{
 	const sv = fixture.servicioDeDodainEl442016deMilPesos()
-	assert.equals(43,conAjuste.coeficienteDeAjuste(sv.mesesAlDiaDeHoy()))
+	sv.estado(true)
+	assert.equals(43,sv.ajustePorInflacion())
 }
 
 test "el ajuste esta activado, damian contrata a dodain el valor es 6864"{
@@ -461,7 +465,8 @@ test "el ajuste esta activado, damian contrata a dodain el valor es 6864"{
 	const casaDeDamian = fixture.casaDeDamian(damian)
 	const sv = fixture.servicioDeDodainEl442016deMilPesos()
 	damian.contratarA(dodain)
-	var costoConAjuste = dodain.costoTotal(casaDeDamian) * (1+conAjuste.coeficienteDeAjuste(sv.mesesAlDiaDeHoy())/100)  
+	sv.estado(true)
+	var costoConAjuste = dodain.costoTotal(casaDeDamian) * (1+sv.ajustePorInflacion()/100)  
 	assert.equals(6864,costoConAjuste)
 }
 

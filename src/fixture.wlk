@@ -1,4 +1,6 @@
 import tp.*
+import contratistas.*
+
 object fixture{
 	
 	method casaDeAldo(persona){
@@ -10,7 +12,6 @@ object fixture{
 		persona.casa(casa)
 		return casa
 	}
-	
 	
 	method casaComplicada(casa,persona){
 		const cocina = new Cocina(2,1,3.5)
@@ -37,14 +38,6 @@ object fixture{
 		casa.agregarHabitacion(cuarto3)
 		casa.agregarHabitacion(cuarto4)
 		casa.agregarHabitacion(cuarto5)
-		persona.casa(casa)
-	}
-	
-	method casaComplicadaDe2Ambientes(casa,persona){
-		const cuarto2 = new CuartoDeAldo(20)
-		const cuarto3 = new CuartoDeAldo(20)
-		casa.agregarHabitacion(cuarto2)
-		casa.agregarHabitacion(cuarto3)
 		persona.casa(casa)
 	}
 	
@@ -196,13 +189,17 @@ object fixture{
 	method servicioDeDodainEl1532016deMilPesos(){
 		const dodain = self.dodain()
 		const casa = new Casa(1)
+		const hab1 = new Habitacion(4,3,3)
+		casa.agregarHabitacion(hab1)
 		const fecha = new Date(15,03,2016)
 		return new TrabajoRealizado(dodain,1000,casa,fecha,casa.complejidad())
 	}
 	
 	method servicioDeDodainEl442016deMilPesos(){
 		const dodain = self.dodain()
-		const casa = new Casa(1)
+		const casa = new Casa(3)
+		const hab1 = new Habitacion(4,3,3)
+		casa.agregarHabitacion(hab1)
 		const fecha = new Date(04,04,2016)
 		return new TrabajoRealizado(dodain,1000,casa,fecha,casa.complejidad())	
 	}
