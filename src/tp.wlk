@@ -8,32 +8,7 @@ class NoSePuedeAbonarError inherits Exception{
 		constructor(_mensaje) = super(_mensaje)
 	}
 	
-object aprendiz{
-	
-	method porcentajeDeSuma(){
-		return 0
-	}
-}
 
-object experimentado{
-	
-	method porcentajeDeSuma(){
-		return 20
-	}
-}
-
-class Maestro {
-	var porcentajeDeSuma = 30
-	method porcentajeDeSuma(){
-		return porcentajeDeSuma
-	}
-}
-
-object referente inherits Maestro{
-}
-
-object maestro inherits Maestro{
-}
 
 class Agencia {
 	var empleados = []
@@ -55,7 +30,7 @@ class Agencia {
 class Persona {
 	var casa
 	var ahorros
-	var preciosDeServiciosContratados = []
+	
 	var serviciosContratados = []
 	var trabajosContratados = []
 	var porcentajeDispuestoAGastar = 0.2
@@ -90,7 +65,6 @@ class Persona {
 		}
 		else {
 			self.reducirAhorros(contratista.costoTotal(casa))
-			preciosDeServiciosContratados.add(contratista.costoTotal(casa)) //TODO: volar
 			const trabajo = new TrabajoRealizado(contratista,contratista.costoTotal(casa),casa,new Date(),casa.complejidad())
 			serviciosContratados.add(contratista)
 			trabajosContratados.add(trabajo)
@@ -104,7 +78,7 @@ class Persona {
 		return self.precioMasCaro() > 5000
 	}
 	method precioMasCaro(){
-		return preciosDeServiciosContratados.max()
+		return self.trabajosContratados().map({unTrabajo => unTrabajo.precio()}).max()
 	}
 	method cantidadDeServiciosContratados(){
 		return serviciosContratados.size()
@@ -124,6 +98,10 @@ class Persona {
 	method trabajosContratados(){
 		return trabajosContratados
 	}
+	method trabajosQueMeHizoEnElMes(contratista){
+		var mesActual= new Date().month()
+		return self.trabajosContratados().filter({unServicio => unServicio.hechoPor() == contratista && unServicio.mes() == mesActual })
+	}
 }
 
 class TrabajoRealizado {
@@ -133,12 +111,16 @@ class TrabajoRealizado {
 	var complejidadDeLaCasa
 	var fecha
 	var estaActivadoAjuste = false
+	var ajustePorInflacion
 	constructor(_servicio,_precio,_casa,_fecha,_complejidadDeLaCasa){
 		servicio = _servicio
 		precio = _precio
 		casa = _casa
 		fecha = _fecha
 		complejidadDeLaCasa = _complejidadDeLaCasa
+	}
+	method hechoPor(){
+		return servicio
 	}
 	method servicio(){
 		return servicio
@@ -151,6 +133,9 @@ class TrabajoRealizado {
 	}
 	method casa(){
 		return casa
+	}
+	method mes(){
+		return self.fecha().month()
 	}
 	method complejidadDeLaCasa(){
 		return complejidadDeLaCasa
@@ -183,6 +168,12 @@ class TrabajoRealizado {
 
 	method estado(_estado){
 		estaActivadoAjuste = _estado
+	}
+	method valor(){
+		if(estaActivadoAjuste){
+			return self.precio() + self.precio() * self.ajustePorInflacion() * 0.01
+		}
+		else {return self.precio()}
 	}
 }
 

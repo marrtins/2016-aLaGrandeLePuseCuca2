@@ -135,8 +135,8 @@ test "cuanto cobra marcos por una casa compli debe ser 132k"{
 	const marcos = fixture.marcos()
 	const alguien = new Persona(6000)
 	const casaComplicada = new Casa(2)
-	fixture.casaComplicadaDe4Ambientes(casaComplicada,alguien)
-	assert.equals(132000,marcos.costoTotal(casaComplicada))
+	fixture.casaComplicadaDe2Ambientes(casaComplicada,alguien)
+	assert.equals(110000,marcos.costoTotal(casaComplicada))
 }
 
 test "cuanto cobra lito por la casa de aldo debe ser 1600"{
@@ -463,11 +463,10 @@ test "el ajuste esta activado, damian contrata a dodain el valor es 6864"{
 	const damian = fixture.damian()
 	const dodain = fixture.dodain()
 	const casaDeDamian = fixture.casaDeDamian(damian)
-	const sv = fixture.servicioDeDodainEl442016deMilPesos()
-	damian.contratarA(dodain)
+	const sv = new TrabajoRealizado(dodain,dodain.costoTotal(casaDeDamian),casaDeDamian,new Date(),casaDeDamian.complejidad())
 	sv.estado(true)
-	var costoConAjuste = dodain.costoTotal(casaDeDamian) * (1+sv.ajustePorInflacion()/100)  
-	assert.equals(6864,costoConAjuste)
+	assert.equals(6864,sv.valor())
+	
 }
 
 

@@ -17,16 +17,13 @@ class Contratista {
 		return parametroBase
 	}
 	
-	method serviciosHechosEnElMesA(persona){ /*TODO: rompe encapsulamiento */
-		return (persona.trabajosContratados().filter({unTrabajo => (unTrabajo.servicio() == self) && new Date().month() == unTrabajo.fecha().month() /*rompo encapsulamiento. Delegar.*/  }))
-	}
-		
+	
 	method loTomoDePunto(persona){
-		return self.serviciosHechosEnElMesA(persona).size() >= 2
+		return persona.trabajosQueMeHizoEnElMes(self).size() >= 2
 	}
 	
 	method cuantoMePagoEnElMes(persona){
-		return self.serviciosHechosEnElMesA(persona).sum({unServicio => unServicio.precio()})
+		return persona.trabajosQueMeHizoEnElMes(self).sum({unServicio => unServicio.precio()})
 	}
 	
 	method setearFechaInicio(dia,mes,ano){
@@ -72,34 +69,64 @@ class Contratista {
 	}
 	
 	method calidadDelContratista(){
-		//TODO: coleccion y find
-		
-		
-		//if(aprendiz.aplica(self)){ //TODO.
-			//return aprendiz	
-		//}
-		if(501 <= self.experienciaGanada() < 1000){
+		if(aprendiz.aplica(self)){
+			return aprendiz
+		}
+		else if(experimentado.aplica(self)){
 			return experimentado
 		}
-		if(1001>= self.experienciaGanada() && self.antiguedad() > 20){
+		else if(referente.aplica(self)){
 			return referente
 		}
-		else{
-			return maestro
-		}
+		else return maestro
+		
 	}
 	
 	method setearExperiencia(exp){
 		experienciaPrevia += exp
 	}
 	
-	method costoTotal(casa){
-		return 1
-	}
 	
-	method pagame(casa){
-		return self.calidadDelContratista().porcentajeDeSuma() *0.1* self.costoTotal(casa) + self.costoTotal(casa) * 0.1*self.porcentajePorAntiguedad()
+	
+	
+	
+}
+object aprendiz{
+	method aplica(contratista){
+		return contratista.experienciaGanada() < 500
 	}
+	method porcentajeDeSuma(){
+		return 0
+	}
+}
+
+object experimentado{
+	method aplica(contratista){
+		return contratista.experienciaGanada() < 1000 && contratista.experienciaGanada() > 501
+	}
+	method porcentajeDeSuma(){
+		return 0.2
+	}
+}
+
+class Maestro {
+	var porcentajeDeSuma = 0.3
+	method aplica(contratista){
+		return contratista.experienciaGanada() > 1000
+	}
+	method porcentajeDeSuma(){
+		return porcentajeDeSuma
+	}
+}
+
+object referente inherits Maestro{
+	override method aplica(contratista){
+		return contratista.antiguedad() > 20 && super(contratista)
+		
+	}
+}
+
+object maestro inherits Maestro{
 	
 }
 
@@ -108,7 +135,7 @@ class Arquitecto inherits Contratista {
 	constructor(precioBase) = super(precioBase){
 	 	complejidadDelRol = 5
 	}
-	override method costoTotal(casa){
+	method costoTotal(casa){
 		return self.parametroBase() * casa.cantidadPisos() * casa.cantAmbientes() * (1 + self.porcentajePorAntiguedad()/100)
 	}
 	override method porcentajePorAntiguedad(){
@@ -122,16 +149,18 @@ class MaestroMayorDeObra inherits Contratista {
 	constructor(precioBase) = super(precioBase){
 		complejidadDelRol = 3
 	}
-	
-	 override method costoTotal(casa){
-		if (casa.esComplicada()){
-				return self.parametroBase() * casa.cantAmbientes() * 1.2 * (1 + self.porcentajePorAntiguedad()/100)
-			}
-			else { 
-				 return self.parametroBase() * casa.cantAmbientes() * (1 + self.porcentajePorAntiguedad()/100)
-			}
-		}
+	method costoContratista(casa){
+		if(casa.esComplicada()){
+			return self.parametroBase() * casa.cantAmbientes() * 1.2
 		
+		}
+		else {
+			return self.parametroBase()*casa.cantAmbientes()
+		}
+	}
+	  method costoTotal(casa){
+		return (1 + self.porcentajePorAntiguedad()/100)*self.costoContratista(casa) + self.calidadDelContratista().porcentajeDeSuma() * self.costoContratista(casa)
+	}
 	override method porcentajePorAntiguedad(){
 		if(self.antiguedad() < 5){
 			return 0
@@ -149,14 +178,14 @@ class Albanil inherits Contratista {
 	constructor (horas) = super(horas)  {
 		complejidadDelRol = 1
 	}
-	override method costoTotal(casa){
+	method costoTotal(casa){
 		return 50 * self.parametroBase() * casa.cantAmbientes() 
 	}
 }
 
 class Electricista inherits Contratista {
 	constructor(precioBase) = super(precioBase)
-	override method costoTotal(casa){
+	 method costoTotal(casa){
 		if (casa.esComplicada()){
 				return self.parametroBase() *2 * casa.cantAmbientes() 	
 				}
@@ -170,7 +199,7 @@ class Electricista inherits Contratista {
 class Plomero inherits Contratista {
 	constructor(porcentajeRecargo) = super(porcentajeRecargo)
 	
-	override method costoTotal(casa){
+	 method costoTotal(casa){
 		if (casa.cantidadPisos() > 2){
 				return 100 * self.parametroBase() * casa.cantAmbientes() 	
 				}
@@ -185,14 +214,14 @@ object raul inherits Contratista(25) {
 	method costoManoDeObra(metros){
 		return parametroBase * metros
 	}
-	override method costoTotal(casa) { 
+	 method costoTotal(casa) { 
 		return  self.costoManoDeObra(casa.superficieTotal()) + tipo.precioPintura(casa.superficieTotal()) 
 	}
 }
 
 object carlos inherits Contratista(500){
 		
-	override method costoTotal(casa){
+	 method costoTotal(casa){
 		return (parametroBase).max(parametroBase+(casa.superficieTotal() - 20)*30)
 	}
 		
@@ -207,7 +236,7 @@ object venancio inherits Contratista(220){
 	method costoManoDeObra(metros){
 		return parametroBase * (rounder.roundUp(metros / 10.0 ))
 	}
-	override method costoTotal(casa){
+	 method costoTotal(casa){
 		return  self.costoManoDeObra(casa.superficieTotal())+ tipo.precioPintura(casa.superficieTotal())
 	}	
 }
