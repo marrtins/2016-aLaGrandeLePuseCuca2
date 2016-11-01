@@ -135,8 +135,8 @@ test "cuanto cobra marcos por una casa compli debe ser 132k"{
 	const marcos = fixture.marcos()
 	const alguien = new Persona(6000)
 	const casaComplicada = new Casa(2)
-	fixture.casaComplicadaDe2Ambientes(casaComplicada,alguien)
-	assert.equals(110000,marcos.costoTotal(casaComplicada))
+	fixture.casaComplicadaDe4Ambientes(casaComplicada,alguien)
+	assert.equals(264000,marcos.costoTotal(casaComplicada))
 }
 
 test "cuanto cobra lito por la casa de aldo debe ser 1600"{
