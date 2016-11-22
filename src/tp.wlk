@@ -2,6 +2,7 @@ import fixture.*
 import contratistas.*
 
 class FechaPosteriorError inherits Exception{ 
+		//1
 		constructor(_mensaje) = super(_mensaje)
 		}
 class NoSePuedeAbonarError inherits Exception{

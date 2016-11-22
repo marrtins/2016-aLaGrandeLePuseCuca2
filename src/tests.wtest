@@ -2,7 +2,9 @@ import tp.*
 import contratistas.*
 import fixture.*
 
+
 test "PINTURA: Latas necesarias para 251m2 deben ser 6" {
+	//1
 	assert.equals(6,balde.latasNecesarias(251))
 }
 

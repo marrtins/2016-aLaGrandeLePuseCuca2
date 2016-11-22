@@ -1,8 +1,9 @@
 import tp.*
 import contratistas.*
 
+
 object fixture{
-	
+	//1
 	method casaDeAldo(persona){
 		const casa = new Casa(2)
 		const cocina = new Cocina(2,1,3.5)

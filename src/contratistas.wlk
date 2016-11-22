@@ -2,6 +2,7 @@ import tp.*
 import fixture.*
 
 class Contratista {
+	//1
 	var parametroBase
 	var fechaDeInicio
 	var trabajosRealizados = []
@@ -97,12 +98,8 @@ class Contratista {
 	
 	
 }
-class Calidad{
-	method nombreSimple(){
-		return self
-	}
-}
-object aprendiz inherits Calidad{
+
+object aprendiz {
 	method aplica(contratista){
 		return contratista.experienciaGanada() < 500
 	}
@@ -111,7 +108,7 @@ object aprendiz inherits Calidad{
 	}
 }
 
-object experimentado inherits Calidad{
+object experimentado {
 	method aplica(contratista){
 		return contratista.experienciaGanada() < 1000 && contratista.experienciaGanada() > 501
 	}
@@ -120,7 +117,7 @@ object experimentado inherits Calidad{
 	}
 }
 
-class Maestro inherits Calidad{
+class Maestro {
 	var porcentajeDeSuma = 0.3
 	method aplica(contratista){
 		return contratista.experienciaGanada() > 1000
