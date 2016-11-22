@@ -31,7 +31,6 @@ class Persona {
 	var casa
 	var ahorros
 	
-	var serviciosContratados = []
 	var trabajosContratados = []
 	var porcentajeDispuestoAGastar = 0.2
 	
@@ -48,7 +47,7 @@ class Persona {
 		return ahorros * porcentajeDispuestoAGastar
 	}
 	method puedeContratarA(persona){
-		return self.presupuesto() > persona.costoTotal(casa) 
+		return self.presupuesto() > persona.costoSinAdicionales(casa) 
 	}
 	method superficieAPintar(){
 		return casa.superficieTotal()
@@ -66,7 +65,6 @@ class Persona {
 		else {
 			self.reducirAhorros(contratista.costoTotal(casa))
 			const trabajo = new TrabajoRealizado(contratista,contratista.costoTotal(casa),casa,new Date(),casa.complejidad())
-			serviciosContratados.add(contratista)
 			trabajosContratados.add(trabajo)
 			contratista.agregarTrabajo(trabajo)
 			
@@ -81,10 +79,10 @@ class Persona {
 		return self.trabajosContratados().map({unTrabajo => unTrabajo.precio()}).max()
 	}
 	method cantidadDeServiciosContratados(){
-		return serviciosContratados.size()
+		return trabajosContratados.size()
 	}
 	method leRealizaronUnTrabajo(){ 
-		return serviciosContratados.asSet()
+		return trabajosContratados.map({unTrabajo => unTrabajo.hechoPor()}).asSet()
 	}
 	method nombreDelServicioMasCaro(){
 		return self.nombreSimpleDelServicio(self.servicioMasCaro())
@@ -101,6 +99,9 @@ class Persona {
 	method trabajosQueMeHizoEnElMes(contratista){
 		var mesActual= new Date().month()
 		return self.trabajosContratados().filter({unServicio => unServicio.hechoPor() == contratista && unServicio.mes() == mesActual })
+	}
+	method cuantoLePagueEnElMesA(contratista){
+		return self.trabajosQueMeHizoEnElMes(contratista).sum({unServicio => unServicio.precio()})
 	}
 }
 
@@ -175,6 +176,8 @@ class TrabajoRealizado {
 		}
 		else {return self.precio()}
 	}
+	
+	
 }
 
 class Damian inherits Persona {

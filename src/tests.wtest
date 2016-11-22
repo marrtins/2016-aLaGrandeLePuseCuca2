@@ -28,16 +28,16 @@ test "PINTORES: mano de obra de raul por 20m2 debe ser 500"{
 }
 test "PINTORES: total de raul por 20m2 debe ser 700"{
 	const casaDePrueba = fixture.casaDePrueba(20)
-	assert.equals(700,raul.costoTotal(casaDePrueba))
+	assert.equals(700,raul.costoSinAdicionales(casaDePrueba))
 }
 
 test "PINTORES: total de carlos por 20m2 debe ser 500"{
 	const casaDePrueba = fixture.casaDePrueba(20)
-	assert.equals(500,carlos.costoTotal(casaDePrueba))
+	assert.equals(500,carlos.costoSinAdicionales(casaDePrueba))
 }
 test "PINTORES: total de carlos por 32m2 debe ser 860"{
 	const casaDePrueba = fixture.casaDePrueba(32)
-	assert.equals(860,carlos.costoTotal(casaDePrueba))
+	assert.equals(860,carlos.costoSinAdicionales(casaDePrueba))
 }
 test "PINTORES: mano de obra de venancio por 32m2 debe ser 880"{
 	
@@ -49,7 +49,7 @@ test "PINTORES: mano de obra de venancio por 20m2 debe ser 440"{
 
 test "PINTORES: total de venancio por 32m2 debe ser 1080"{
 	const casaDePrueba = fixture.casaDePrueba(32)
-	assert.equals(1080,venancio.costoTotal(casaDePrueba))
+	assert.equals(1080,venancio.costoSinAdicionales(casaDePrueba))
 }
 test "AMBIENTES: Superficie de la cocina debe ser 21m"{
 	const cocina = new Cocina(2,1,3.5)
@@ -143,34 +143,34 @@ test "cuanto cobra lito por la casa de aldo debe ser 1600"{
 	const lito = new Albanil(16)
 	const aldo = fixture.aldo()
 	const casaDeAldo = fixture.casaDeAldo(aldo)
-	assert.equals(1600,lito.costoTotal(casaDeAldo))
+	assert.equals(1600,lito.costoSinAdicionales(casaDeAldo))
 }
 test "cuanto cobra eduardo por la casa de aldo debe ser 200"{
 	
 	const eduardo = new Electricista(100)
 	const aldo = fixture.aldo()
 	const casaDeAldo = fixture.casaDeAldo(aldo)
-	assert.equals(200,eduardo.costoTotal(casaDeAldo))
+	assert.equals(200,eduardo.costoSinAdicionales(casaDeAldo))
 }
 test "cuanto cobra eduardo por una casa complicada de 4 ambientes debe ser 800"{
 	const eduardo = new Electricista(100)
 	const alguien = new Persona(6000)
 	const casaComplicada = new Casa(3)
 	fixture.casaComplicadaDe4Ambientes(casaComplicada,alguien)
-	assert.equals(800,eduardo.costoTotal(casaComplicada))
+	assert.equals(800,eduardo.costoSinAdicionales(casaComplicada))
 }
 test "cuanto cobra roger por la casa de aldo debe ser 200"{
 	const roger = new Plomero(1.1)
 	const aldo = fixture.aldo()
 	const casaDeAldo = fixture.casaDeAldo(aldo)
-	assert.equals(200,roger.costoTotal(casaDeAldo))
+	assert.equals(200,roger.costoSinAdicionales(casaDeAldo))
 }
 test "cuanto cobra roger por la casa de 4pisos y 7ambientes debe ser 770"{
 	const roger = new Plomero(1.1)
 	const alguien = new Persona(6000)
 	const casaComplicada = new Casa(4)
 	fixture.casaDe4pisosY7Ambientes(casaComplicada,alguien)
-	assert.equals(770,roger.costoTotal(casaComplicada))
+	assert.equals(770,roger.costoSinAdicionales(casaComplicada))
 }
 test"la casa de aldo es complicadda debe ser false"{
 	const aldo = fixture.aldo()
@@ -197,14 +197,15 @@ test " que contratistas puede contratar aldo son carlos eduardo y roger"{
 
 test "aldo contrta a roger cual ees su presupuesto max ahora es 1160"{
 	const aldo = fixture.aldo()
-	const roger = new Plomero(1.1)
+	const roger = fixture.roger()
 	fixture.casaDeAldo(aldo)
 	aldo.contratarA(roger)
 	assert.equals(1160,aldo.presupuesto())
 }
 test "aldo contrata a roger y a carlos, cuantos servicios tuvo"{
 	const aldo = fixture.aldo()
-	const roger = new Plomero(1.1)
+	const roger = fixture.roger()
+	const carlos = fixture.carlos()
 	fixture.casaDeAldo(aldo)
 	aldo.contratarA(roger)
 	aldo.contratarA(carlos)
@@ -218,7 +219,8 @@ test "aldo intenta contratar a marcos no puede pq no le da el presupuesto"{
 }
 test "aldo contrata a roger y a carlos. saber si fue un descuidado"{
 	const aldo = fixture.aldo()
-	const roger = new Plomero(1.1)
+	const roger = fixture.roger()
+	const carlos = fixture.carlos()
 	fixture.casaDeAldo(aldo)
 	aldo.contratarA(roger)
 	aldo.contratarA(carlos)
@@ -234,7 +236,8 @@ test "aldo ahorra 1millon, contrata amarcos saber si fue un descuidado"{
 }
 test "aldo contrata a roger y a carlos, el mas caro fue el de carlos"{
 	const aldo = fixture.aldo()
-	const roger = new Plomero(1.1)
+	const roger = fixture.roger()
+	const carlos = fixture.carlos()
 	fixture.casaDeAldo(aldo)
 	aldo.contratarA(roger)
 	aldo.contratarA(carlos)
@@ -246,20 +249,20 @@ test "aldo contrata a roger y a carlos, el mas caro fue el de carlos"{
 
 test "costo de noelia para damian debe ser 2000"{
 	const damian = new Damian(250000)
-	const noelia = new Electricista(250)
+	const noelia = fixture.noelia()
 	const casaDeDamian = fixture.casaDeDamian(damian)
 	assert.equals(2000,noelia.costoTotal(casaDeDamian))
 }
 test "costo de silvina para damian debe ser 500"{
 	const damian = fixture.damian()
-	const silvina = new Plomero(1.25)
+	const silvina = fixture.silvina()
 	const casaDeDamian = fixture.casaDeDamian(damian)
 	assert.equals(500,silvina.costoTotal(casaDeDamian))
 }
 test "costo de noelia para milena debe ser 500"{
 	const milena = new Persona(2000)
 	const casaDeMilena = fixture.casaDeMilena(milena)
-	const noelia = new Electricista(250)
+	const noelia = fixture.noelia()
 	assert.equals(500,noelia.costoTotal(casaDeMilena))
 }
 test "costo de eliana para damian debe ser 63360"{
@@ -326,8 +329,8 @@ test "milena ahorra 1,5Mcontrata 2 veces a eliana 1 a silvana, debe indicar el c
 
 test"damian contrata a dodain y luego a silvina. dodain lo tomo de punto? -> false"{
 	const damian = new Damian(250000)
-	const silvina = new Plomero(1.25)
-	const dodain = new Albanil(24)
+	const silvina = fixture.silvina()
+	const dodain = fixture.dodain()
 	fixture.casaDeDamian(damian)
 	damian.contratarA(silvina)
 	damian.contratarA(dodain)
@@ -335,8 +338,8 @@ test"damian contrata a dodain y luego a silvina. dodain lo tomo de punto? -> fal
 }
 test"damian contrata a dodain y luego a silvina y luego dodain. dodain lo tomo de punto? -> true"{
 	const damian = new Damian(250000)
-	const silvina = new Plomero(1.25)
-	const dodain = new Albanil(24)
+	const silvina = fixture.silvina()
+	const dodain = fixture.dodain()
 	fixture.casaDeDamian(damian)
 	damian.contratarA(dodain)
 	damian.contratarA(silvina)
@@ -345,13 +348,13 @@ test"damian contrata a dodain y luego a silvina y luego dodain. dodain lo tomo d
 }
 test"damian contrata a dodain y luego a silvina y luego dodain. cuanto le pago a dodain en el mes es 9600"{
 	const damian = new Damian(250000)
-	const silvina = new Plomero(1.25)
-	const dodain = new Albanil(24)
+	const silvina = fixture.silvina()
+	const dodain = fixture.dodain()
 	fixture.casaDeDamian(damian)
 	damian.contratarA(dodain)
 	damian.contratarA(silvina)
 	damian.contratarA(dodain)
-	assert.equals(9600,dodain.cuantoMePagoEnElMes(damian))
+	assert.equals(9600,damian.cuantoLePagueEnElMesA(dodain))
 }
 ///p4
 
@@ -374,7 +377,7 @@ test "intentar asignar antiguedad 22-10-18 a venancio debe dar error"{
 
 test "saber adicional de marcos como maestro mayor de obra debe ser 10"{
 	const marcos = fixture.marcos()
-	assert.equals(10,marcos.porcentajePorAntiguedad())
+	assert.equals(0.1,marcos.porcentajePorAntiguedad())
 }
 
 test "asignar la fecha 16-4-16 a marcos como fecha de inicio. no debe cobrar adicional"{
@@ -386,12 +389,12 @@ test "asignar la fecha 16-4-16 a marcos como fecha de inicio. no debe cobrar adi
 test "asignar la fecha 16-4-2001 a marcos como fecha de inicio.debe ser 20"{
 	const marcos = new MaestroMayorDeObra(50000)
 	marcos.setearFechaInicio(16,4,2001)
-	assert.equals(20,marcos.porcentajePorAntiguedad())
+	assert.equals(0.2,marcos.porcentajePorAntiguedad())
 }
 
 test "el adicional de emanuel es 7"{
 	const emanuel = fixture.emanuel()
-	assert.equals(7,emanuel.porcentajePorAntiguedad())
+	assert.equals(0.07,emanuel.porcentajePorAntiguedad())
 }
 
 test "el adicional de venancio es 40"{
@@ -468,5 +471,4 @@ test "el ajuste esta activado, damian contrata a dodain el valor es 6864"{
 	assert.equals(6864,sv.valor())
 	
 }
-
 
